@@ -9,7 +9,7 @@ internal class Program
     {
         string currentWorkingDirectory = "C:\\Users\\Work\\Desktop\\testing\\gin";
 
-        RecursiveDefolderize(currentWorkingDirectory);
+       Unfold(currentWorkingDirectory);
     }
 
 
@@ -44,45 +44,74 @@ internal class Program
     {
         string[] files = Directory.GetFiles(currentDirectory);
         foreach (string file in files){
+            Console.WriteLine("\nCurrent File: " + file.Substring(file.LastIndexOf("\\")+1));
             string filePath = file;
             string fileName = GetExtensionlessFileName(filePath);
             string fileExtension = filePath.Substring(filePath.LastIndexOf("."));
             string newFilePath = parentDirectory+"\\"+fileName+fileExtension;
-
-            while (File.Exists(newFilePath))
-            {   
-                Console.WriteLine(fileName+" already exists in "+parentDirectory+"... Renaming...");
-                File.Move(filePath, currentDirectory+"\\"+fileName+"_copy"+fileExtension);
-                fileName = fileName+"_copy";
-                filePath = currentDirectory+"\\"+fileName+fileExtension;
-                newFilePath = parentDirectory+"\\"+fileName+fileExtension;
+            if (File.Exists(newFilePath))
+            {
+                Console.WriteLine("File Already Exists...");
+                string newFileName = FindViableFileName(filePath,parentDirectory);
+                newFilePath = parentDirectory+"\\"+newFileName+fileExtension;
             }
 
-            Console.WriteLine("Moving "+fileName);
+            Console.WriteLine("Moving "+fileName+fileExtension + "...");
             File.Move(filePath,newFilePath);
         }
     }
 
+
     public static void MoveDirectories(string currentDirectory, string parentDirectory)
     {
         foreach(string directory in Directory.GetDirectories(currentDirectory))
-        {
+        {   
+            Console.WriteLine("\nCurrent Directory: " + directory.Substring(directory.LastIndexOf("\\")+1));
             string directoryPath = directory;
             string directoryName = directory.Substring(directory.LastIndexOf("\\")+1);
             string newDirectoryPath = parentDirectory + "\\" + directoryName;
 
-            while (Directory.Exists(newDirectoryPath))
+            if (Directory.Exists(newDirectoryPath))
             {
-                Console.WriteLine(directoryName + " already exists in " + parentDirectory + "... Renaming...");
-                Directory.Move(directoryPath, currentDirectory + "\\" + directoryName + "_copy");
-                directoryName = directoryName + "_copy";
-                directoryPath = currentDirectory + "\\" + directoryName;
-                newDirectoryPath = parentDirectory + "\\" + directoryName;
+                Console.WriteLine("Directory already exists...");
+                string newDirectoryName = FindViableDirectoryName(directoryPath,parentDirectory);
+                newDirectoryPath = parentDirectory + "\\" + newDirectoryName;
             }
-
-            Console.WriteLine("Moving "+directoryName+" to "+parentDirectory+"\\"+directoryName);
+            
+            Console.WriteLine("Moving directory "+directoryName + "...");
             Directory.Move(directoryPath,newDirectoryPath);
         }
+    }
+
+
+    public static string FindViableFileName(string filePath, string parentDirectory)
+    {
+        Console.WriteLine("Finding new Filename...");
+        string newFileName = GetExtensionlessFileName(filePath);
+        string fileExtension = filePath.Substring(filePath.LastIndexOf("."));
+        string newFilePath = parentDirectory + "\\" + newFileName + fileExtension;
+        while (File.Exists(newFilePath))
+        {
+            newFileName = newFileName + "_copy";
+            newFilePath = parentDirectory + "\\" + newFileName + fileExtension;
+        }
+        Console.WriteLine("New Name: "+newFileName + fileExtension);
+        return(newFileName);
+    }
+ 
+
+ public static string FindViableDirectoryName(string directoryPath, string parentDirectory)
+    {
+        Console.WriteLine("Finding new name...");
+        string newDirectoryName = directoryPath.Substring(directoryPath.LastIndexOf("\\")+1);
+        string newDirectoryPath = parentDirectory + "\\" + newDirectoryName ;
+        while (Directory.Exists(newDirectoryPath))
+        {
+            newDirectoryName = newDirectoryName + "_copy";
+            newDirectoryPath = parentDirectory + "\\" + newDirectoryName;
+        }
+        Console.WriteLine("New Name: "+newDirectoryName);
+        return(newDirectoryName);
     }
 
     public static string GetExtensionlessFileName(string filePath)
