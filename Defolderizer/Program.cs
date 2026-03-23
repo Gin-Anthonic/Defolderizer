@@ -1,17 +1,45 @@
-﻿namespace Defolderizer {
+﻿using System;
+using System.IO;
+//><
+namespace Defolderizer {
 
     internal class Program {
 
         static void Main(string[] args) {
-            string currentWorkingDirectory = "C:\\Users\\Work\\Desktop\\testing\\gin";
 
-            foreach(string file in Directory.GetFiles(currentWorkingDirectory)) {
-                Console.WriteLine(file);
+            if (args.Length == 0 || args.Length > 2) {
+                Console.WriteLine("Invalid number of Arguments given.. exiting...");
+                System.Environment.Exit(0);
             }
-            foreach (string file in Directory.GetDirectories(currentWorkingDirectory)) {
-                Console.WriteLine(file);
+
+            if (!Directory.Exists( args[0])) {
+                Console.WriteLine("Directory specified could not be found... exiting");
+                System.Environment.Exit(0);
             }
-            Unfold(currentWorkingDirectory);
+
+            string[] validArgs = ["unfold", "defolderize", "recursive"];
+            if (!validArgs.Contains(args[1])) {
+                Console.WriteLine("Invalid argument for mode... exiting");
+                System.Environment.Exit(0);
+            }
+
+            string currentWorkingDirectory = args[0];
+            string mode = args[1];
+
+            Console.WriteLine("Current Directory:" + currentWorkingDirectory + " Mode: " + mode);
+
+            switch (mode) {
+                case "unfold":
+                    Unfold(currentWorkingDirectory);
+                    break;
+                case "defolderize":
+                    Defolderize(currentWorkingDirectory);
+                    break;
+                case "recursive":
+                    RecursiveDefolderize(currentWorkingDirectory);
+                    break;
+            }
+
         }
 
 
@@ -101,6 +129,7 @@
             Console.WriteLine("New Name: " + newDirectoryName);
             return (newDirectoryName);
         }
+
 
         public static string GetExtensionlessFileName(string filePath) {
             string fileName = filePath.Substring(filePath.LastIndexOf("\\") + 1);

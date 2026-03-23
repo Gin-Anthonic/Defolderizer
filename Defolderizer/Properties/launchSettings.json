@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Defolderizer": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\\\Users\\\\Work\\\\Desktop\\\\testing\\\\gin\" \"recursive\""
+    }
+  }
+}
