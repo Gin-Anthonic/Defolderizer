@@ -66,6 +66,10 @@ namespace Defolderizer {
 
 
         public static void Unfold(DirectoryInfo currentDirectory) {
+            if (currentDirectory.Parent == null) {
+                Console.WriteLine($"The directory {currentDirectory.Name} seems to have no parent, unfolding not possible... Exiting...");
+                return;
+            }
 
             DirectoryInfo parentDirectory = currentDirectory.Parent;
             MoveFiles(currentDirectory, parentDirectory);
@@ -79,12 +83,12 @@ namespace Defolderizer {
             foreach (FileInfo file in files) {
                 Console.WriteLine("\nCurrent File: " + file.Name);
 
-                string newFilePath = parentDirectory.FullName + "\\" + file.Name;
+                string newFilePath = Path.Combine(parentDirectory.FullName,file.Name);
 
                 if (File.Exists(newFilePath)) {
                     Console.WriteLine("File Already Exists...");
                     string newFileName = FindViableFileName(file, parentDirectory);
-                    newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
+                    newFilePath = Path.Combine(parentDirectory.FullName, newFileName) + file.Extension;
                 }
 
                 Console.WriteLine("Moving " + file.Name + "...");
@@ -97,12 +101,12 @@ namespace Defolderizer {
             foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
                 Console.WriteLine("\nCurrent Directory: " + directory.Name);
 
-                string newDirectoryPath = parentDirectory.FullName + "\\" + directory.Name;
+                string newDirectoryPath = Path.Combine(parentDirectory.FullName, directory.Name);
 
                 if (Directory.Exists(newDirectoryPath)) {
                     Console.WriteLine("Directory already exists...");
                     string newDirectoryName = FindViableDirectoryName(directory, parentDirectory);
-                    newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
+                    newDirectoryPath = Path.Combine(parentDirectory.FullName ,newDirectoryName);
                 }
 
                 Console.WriteLine("Moving directory " + directory.Name + "...");
@@ -114,10 +118,10 @@ namespace Defolderizer {
         public static string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
             Console.WriteLine("Finding new Filename...");
             string newFileName = file.Name[..file.Name.LastIndexOf(".")];
-            string newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
+            string newFilePath = Path.Combine(parentDirectory.FullName ,newFileName) + file.Extension;
             while (File.Exists(newFilePath)) {
                 newFileName = newFileName + "_copy";
-                newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
+                newFilePath = Path.Combine(parentDirectory.FullName , newFileName) + file.Extension;
             }
             Console.WriteLine("New Name: " + newFileName + file.Extension);
             return (newFileName);
@@ -127,10 +131,10 @@ namespace Defolderizer {
         public static string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
             Console.WriteLine("Finding new name...");
             string newDirectoryName = directory.Name ;
-            string newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
+            string newDirectoryPath = Path.Combine(parentDirectory.FullName ,newDirectoryName);
             while (Directory.Exists(newDirectoryPath)) {
                 newDirectoryName = newDirectoryName + "_copy";
-                newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
+                newDirectoryPath = Path.Combine(parentDirectory.FullName ,newDirectoryName);
             }
             Console.WriteLine("New Name: " + newDirectoryName);
             return (newDirectoryName);
