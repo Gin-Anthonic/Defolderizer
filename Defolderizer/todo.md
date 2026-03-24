@@ -1,0 +1,4 @@
+- [ ] catch possible exceptions
+- [ ] switch to file and dir objects
+- [ ] logging
+- [ ] 

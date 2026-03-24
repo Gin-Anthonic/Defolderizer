@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.IO;
 //><
 namespace Defolderizer {
@@ -6,6 +7,8 @@ namespace Defolderizer {
     internal class Program {
 
         static void Main(string[] args) {
+
+            SetupTestFolder();
 
             if (args.Length == 0 || args.Length > 2) {
                 Console.WriteLine("Invalid number of Arguments given.. exiting...");
@@ -17,125 +20,127 @@ namespace Defolderizer {
                 System.Environment.Exit(0);
             }
 
-            string[] validArgs = ["unfold", "defolderize", "recursive"];
+            string[] validArgs = ["unfold", "defolderize", "recursive","test"];
             if (!validArgs.Contains(args[1])) {
                 Console.WriteLine("Invalid argument for mode... exiting");
                 System.Environment.Exit(0);
             }
 
-            string currentWorkingDirectory = args[0];
+            string currentDirectoryPath = args[0];
             string mode = args[1];
 
-            Console.WriteLine("Current Directory:" + currentWorkingDirectory + " Mode: " + mode);
+            DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
+
+            Console.WriteLine("Current Directory:" + currentDirectoryPath + " Mode: " + mode);
 
             switch (mode) {
                 case "unfold":
-                    Unfold(currentWorkingDirectory);
+                    Unfold(currentDirectory);
                     break;
                 case "defolderize":
-                    Defolderize(currentWorkingDirectory);
+                    Defolderize(currentDirectory);
                     break;
                 case "recursive":
-                    RecursiveDefolderize(currentWorkingDirectory);
+                    RecursiveDefolderize(currentDirectory);
+                    break;
+                case "test":
+                    FileInfo test = new FileInfo(currentDirectoryPath + "\\nonExistantFile.txt");
+                    Console.WriteLine($"test {test.FullName} Exists: {test.Exists } " );
                     break;
             }
-
         }
 
 
-        public static void Defolderize(string currentDirectory) {
-            foreach (string directory in Directory.GetDirectories(currentDirectory)) {
+        public static void Defolderize(DirectoryInfo currentDirectory) {
+            foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
                 Unfold(directory);
             }
         }
 
 
-        public static void RecursiveDefolderize(string currentDirectory) {
-            while (Directory.GetDirectories(currentDirectory).Length > 0) {
+        public static void RecursiveDefolderize(DirectoryInfo currentDirectory) {
+            while (currentDirectory.GetDirectories().Length > 0) {
                 Defolderize(currentDirectory);
             }
         }
 
 
-        public static void Unfold(string currentDirectory) {
-            string parentDirectory = Directory.GetParent(currentDirectory).FullName;
+        public static void Unfold(DirectoryInfo currentDirectory) {
+
+            DirectoryInfo parentDirectory = currentDirectory.Parent;
             MoveFiles(currentDirectory, parentDirectory);
             MoveDirectories(currentDirectory, parentDirectory);
-            Directory.Delete(currentDirectory);
+            currentDirectory.Delete();
         }
 
 
-        public static void MoveFiles(string currentDirectory, string parentDirectory) {
-            string[] files = Directory.GetFiles(currentDirectory);
-            foreach (string file in files) {
-                Console.WriteLine("\nCurrent File: " + file.Substring(file.LastIndexOf("\\") + 1));
-                string filePath = file;
-                string fileName = GetExtensionlessFileName(filePath);
-                string fileExtension = filePath.Substring(filePath.LastIndexOf("."));
-                string newFilePath = parentDirectory + "\\" + fileName + fileExtension;
+        public static void MoveFiles(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
+            FileInfo[] files = currentDirectory.GetFiles();
+            foreach (FileInfo file in files) {
+                Console.WriteLine("\nCurrent File: " + file.Name);
+
+                string newFilePath = parentDirectory.FullName + "\\" + file.Name;
+
                 if (File.Exists(newFilePath)) {
                     Console.WriteLine("File Already Exists...");
-                    string newFileName = FindViableFileName(filePath, parentDirectory);
-                    newFilePath = parentDirectory + "\\" + newFileName + fileExtension;
+                    string newFileName = FindViableFileName(file, parentDirectory);
+                    newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
                 }
 
-                Console.WriteLine("Moving " + fileName + fileExtension + "...");
-                File.Move(filePath, newFilePath);
+                Console.WriteLine("Moving " + file.Name + "...");
+                file.MoveTo(newFilePath);
             }
         }
 
 
-        public static void MoveDirectories(string currentDirectory, string parentDirectory) {
-            foreach (string directory in Directory.GetDirectories(currentDirectory)) {
-                Console.WriteLine("\nCurrent Directory: " + directory.Substring(directory.LastIndexOf("\\") + 1));
-                string directoryPath = directory;
-                string directoryName = directory.Substring(directory.LastIndexOf("\\") + 1);
-                string newDirectoryPath = parentDirectory + "\\" + directoryName;
+        public static void MoveDirectories(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
+            foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
+                Console.WriteLine("\nCurrent Directory: " + directory.Name);
+
+                string newDirectoryPath = parentDirectory.FullName + "\\" + directory.Name;
 
                 if (Directory.Exists(newDirectoryPath)) {
                     Console.WriteLine("Directory already exists...");
-                    string newDirectoryName = FindViableDirectoryName(directoryPath, parentDirectory);
-                    newDirectoryPath = parentDirectory + "\\" + newDirectoryName;
+                    string newDirectoryName = FindViableDirectoryName(directory, parentDirectory);
+                    newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
                 }
 
-                Console.WriteLine("Moving directory " + directoryName + "...");
-                Directory.Move(directoryPath, newDirectoryPath);
+                Console.WriteLine("Moving directory " + directory.Name + "...");
+                directory.MoveTo(newDirectoryPath);
             }
         }
 
 
-        public static string FindViableFileName(string filePath, string parentDirectory) {
+        public static string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
             Console.WriteLine("Finding new Filename...");
-            string newFileName = GetExtensionlessFileName(filePath);
-            string fileExtension = filePath.Substring(filePath.LastIndexOf("."));
-            string newFilePath = parentDirectory + "\\" + newFileName + fileExtension;
+            string newFileName = file.Name[..file.Name.LastIndexOf(".")];
+            string newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
             while (File.Exists(newFilePath)) {
                 newFileName = newFileName + "_copy";
-                newFilePath = parentDirectory + "\\" + newFileName + fileExtension;
+                newFilePath = parentDirectory.FullName + "\\" + newFileName + file.Extension;
             }
-            Console.WriteLine("New Name: " + newFileName + fileExtension);
+            Console.WriteLine("New Name: " + newFileName + file.Extension);
             return (newFileName);
         }
 
 
-        public static string FindViableDirectoryName(string directoryPath, string parentDirectory) {
+        public static string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
             Console.WriteLine("Finding new name...");
-            string newDirectoryName = directoryPath.Substring(directoryPath.LastIndexOf("\\") + 1);
-            string newDirectoryPath = parentDirectory + "\\" + newDirectoryName;
+            string newDirectoryName = directory.Name ;
+            string newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
             while (Directory.Exists(newDirectoryPath)) {
                 newDirectoryName = newDirectoryName + "_copy";
-                newDirectoryPath = parentDirectory + "\\" + newDirectoryName;
+                newDirectoryPath = parentDirectory.FullName + "\\" + newDirectoryName;
             }
             Console.WriteLine("New Name: " + newDirectoryName);
             return (newDirectoryName);
         }
 
 
-        public static string GetExtensionlessFileName(string filePath) {
-            string fileName = filePath.Substring(filePath.LastIndexOf("\\") + 1);
-            fileName = fileName.Substring(0, fileName.LastIndexOf("."));
-            return (fileName);
+        public static void SetupTestFolder() {
+            Directory.Delete("C:\\Users\\Work\\Desktop\\testing",true);
+            Directory.CreateDirectory("C:\\Users\\Work\\Desktop\\testing");
+            FileSystem.CopyDirectory("C:\\Users\\Work\\Documents\\gin", "C:\\Users\\Work\\Desktop\\testing\\gin");
         }
-
     }
 }
