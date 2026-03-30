@@ -1,4 +1,6 @@
-- [ ] catch possible exceptions
+- [x] catch possible exceptions
 - [x] switch to file and dir objects
 - [ ] logging
-- [ ] 
+	- [ ] log file
+	- [ ] user feedback
+- [ ] installer
