@@ -3,14 +3,19 @@ using System;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Security;
+using System.Windows.Forms;
 //><
 namespace Defolderizer {
 
     internal class Program {
 
+        public static string UserMessage { get; set; } = "";
+        public static MoveFailure[] MoveFailures = [];
+
         static void Main(string[] args) {
 
             //SetupTestFolder();
+
 
             if (args.Length != 2) {
                 Console.WriteLine(WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
@@ -50,6 +55,18 @@ namespace Defolderizer {
                     Console.WriteLine(WriteLogEntry($"test {test.FullName} Exists: {test.Exists} "));
                     break;
             }
+            if (MoveFailures.Length > 0) {
+                string message = "The following Files/Directories could not be moved: \n\n----------------------";
+            
+                foreach(MoveFailure failure in MoveFailures) {
+                    message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CatchedException.Message;
+                }
+                UserMessage = message + "\n\n----------------------\n" + UserMessage;
+            }
+
+            if (UserMessage != "") {
+                MessageBox.Show(UserMessage);
+            }
         }
 
 
@@ -78,6 +95,7 @@ namespace Defolderizer {
             MoveDirectories(currentDirectory, parentDirectory);
             if (Directory.EnumerateFileSystemEntries(currentDirectory.FullName).Count() != 0) {
                 Console.WriteLine(WriteLogEntry("Directory is not Empty... Removal Failed."));
+                UserMessage += "\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n";
                 return;
             }
             try {
@@ -87,10 +105,12 @@ namespace Defolderizer {
             catch (IOException e) {
                 Console.WriteLine(WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(WriteLogEntry(e.Message,e.ToString()));
+                UserMessage += "\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n";
             }
             catch (UnauthorizedAccessException e) {
                 Console.WriteLine(WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                UserMessage += "\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n";
             }
         }
 
@@ -116,14 +136,17 @@ namespace Defolderizer {
                 catch (IOException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
                 }
                 catch (SecurityException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
                 }
                 catch (UnauthorizedAccessException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
                 }
             }
         }
@@ -149,14 +172,17 @@ namespace Defolderizer {
                 catch (IOException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(directory,e)).ToArray();
                 }
                 catch (SecurityException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(directory, e)).ToArray();
                 }
                 catch (UnauthorizedAccessException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
+                    MoveFailures = MoveFailures.Append(new MoveFailure(directory, e)).ToArray();
                 }
             }
         }
@@ -210,6 +236,16 @@ namespace Defolderizer {
             Directory.Delete("C:\\Users\\Work\\Desktop\\testing",true);
             Directory.CreateDirectory("C:\\Users\\Work\\Desktop\\testing");
             FileSystem.CopyDirectory("C:\\Users\\Work\\Documents\\gin", "C:\\Users\\Work\\Desktop\\testing\\gin");
+        }
+    }
+
+    public struct MoveFailure {
+        public FileSystemInfo Entry {  get; set; }
+        public Exception CatchedException { get; set; }
+
+        public MoveFailure(FileSystemInfo entry, Exception exception) {
+            this.Entry = entry;
+            this.CatchedException = exception;
         }
     }
 }
