@@ -1,6 +1,7 @@
 - [x] catch possible exceptions
 - [x] switch to file and dir objects
+- [ ] numbered renames
 - [ ] logging
-	- [ ] log file
+	- [x] log file
 	- [ ] user feedback
 - [ ] installer
