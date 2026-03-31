@@ -27,7 +27,7 @@ namespace Defolderizer {
                 System.Environment.Exit(0);
             }
 
-            string[] validArgs = ["unfold", "defolderize", "recursive", "test"];
+            string[] validArgs = ["unfold", "defolderize", "recursive"];
             if (!validArgs.Contains(args[1])) {
                 Console.WriteLine(WriteLogEntry("Invalid argument for mode... exiting"));
                 System.Environment.Exit(0);
@@ -50,10 +50,6 @@ namespace Defolderizer {
                     break;
                 case "recursive":
                     RecursiveDefolderize(currentDirectory);
-                    break;
-                case "test":
-                    FileInfo test = new FileInfo(currentDirectoryPath + "\\nonExistantFile.txt");
-                    Console.WriteLine(WriteLogEntry($"test {test.FullName} Exists: {test.Exists} "));
                     break;
             }
             if (MoveFailures.Length > 0) {

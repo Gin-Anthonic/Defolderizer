@@ -5,5 +5,7 @@
 	- [x] log file
 	- [x] Redact path from error message
 	- [x] user feedback
-	- [ ] Catch removal failures in defolderize?
 - [ ] installer
+
+## Improvement Ideas:
+- [ ] Catch removal failures in defolderize?
