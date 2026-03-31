@@ -1,17 +1,13 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using System;
-using System.IO;
-using System.Net.NetworkInformation;
 using System.Security;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-//><
+
 namespace Defolderizer {
 
     internal class Program {
 
         public static string UserMessage { get; set; } = "";
-        public static MoveFailure[] MoveFailures = [];
+        public static MoveFailure[] MoveFailures { get; set; } = [];
 
         static void Main(string[] args) {
 
@@ -52,18 +48,9 @@ namespace Defolderizer {
                     RecursiveDefolderize(currentDirectory);
                     break;
             }
-            if (MoveFailures.Length > 0) {
-                string message = "The following Files/Directories could not be moved: \n\n----------------------";
-            
-                foreach(MoveFailure failure in MoveFailures) {
-                    message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CatchedException.Message;
-                }
-                UserMessage = message + "\n\n----------------------\n" + UserMessage;
-            }
 
-            if (UserMessage != "") {
-                MessageBox.Show(UserMessage);
-            }
+            ShowUserFeedbackPopup();
+            
         }
 
 
@@ -85,6 +72,7 @@ namespace Defolderizer {
 
         public static void Unfold(DirectoryInfo currentDirectory) {
             Console.WriteLine(WriteLogEntry("Unfolding directory " + currentDirectory.FullName, "Unfolding directory [NAME REDACTED]"));
+
             if (currentDirectory.Parent == null) {
                 Console.WriteLine(WriteLogEntry("The directory " + currentDirectory.Name + " seems to have no parent, unfolding not possible... Exiting...", "The directory " + "[NAME REDACTED]" + " seems to have no parent, unfolding not possible... Exiting..."));
                 return;
@@ -93,13 +81,14 @@ namespace Defolderizer {
             DirectoryInfo parentDirectory = currentDirectory.Parent;
             MoveFiles(currentDirectory, parentDirectory);
             MoveDirectories(currentDirectory, parentDirectory);
+
             if (Directory.EnumerateFileSystemEntries(currentDirectory.FullName).Count() != 0) {
                 Console.WriteLine(WriteLogEntry("Directory is not Empty... Removal Failed."));
                 UserMessage += "\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n";
                 return;
             }
-            try {
 
+            try {
                 currentDirectory.Delete();
             }
             catch (IOException e) {
@@ -236,20 +225,38 @@ namespace Defolderizer {
 
         public static string WriteLogEntry(string userLogText, string developerLogText = "") {
 
-            Regex pathFinderRegex = new Regex("'.*[\\\\/].*'");
 
             if (developerLogText == "") {
                 developerLogText = userLogText;
             }
             FileInfo userLogFile = new FileInfo("userLog.txt");
             FileInfo developerLogFile = new FileInfo("developerLog.txt");
+
             StreamWriter userWriter = userLogFile.AppendText();
             userWriter.WriteLine(DateTime.Now + " - " + userLogText);
             userWriter.Close();
+            
+            Regex filePathFinderRegex = new Regex("'.*[\\\\/].*'");
             StreamWriter developerWriter = developerLogFile.AppendText();
-            developerWriter.WriteLine(DateTime.Now + " - " + pathFinderRegex.Replace(developerLogText,"[FILEPATH REDACTED]"));
+            developerWriter.WriteLine(DateTime.Now + " - " + filePathFinderRegex.Replace(developerLogText,"[FILEPATH REDACTED]"));
             developerWriter.Close();
             return userLogText;
+        }
+
+
+        public static void ShowUserFeedbackPopup() {
+            if (MoveFailures.Length > 0) {
+                string message = "The following Files/Directories could not be moved: \n\n----------------------";
+
+                foreach (MoveFailure failure in MoveFailures) {
+                    message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CatchedException.Message;
+                }
+                UserMessage = message + "\n\n----------------------\n" + UserMessage;
+            }
+
+            if (UserMessage != "") {
+                MessageBox.Show(UserMessage);
+            }
         }
 
 
@@ -259,6 +266,7 @@ namespace Defolderizer {
             FileSystem.CopyDirectory("C:\\Users\\Work\\Documents\\gin", "C:\\Users\\Work\\Desktop\\testing\\gin");
         }
     }
+
 
     public struct MoveFailure {
         public FileSystemInfo Entry {  get; set; }
