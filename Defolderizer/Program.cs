@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Security;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 //><
 namespace Defolderizer {
@@ -14,8 +15,7 @@ namespace Defolderizer {
 
         static void Main(string[] args) {
 
-            SetupTestFolder();
-
+            //SetupTestFolder();
 
             if (args.Length != 2) {
                 Console.WriteLine(WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
@@ -236,6 +236,8 @@ namespace Defolderizer {
 
         public static string WriteLogEntry(string userLogText, string developerLogText = "") {
 
+            Regex pathFinderRegex = new Regex("'.*[\\\\/].*'");
+
             if (developerLogText == "") {
                 developerLogText = userLogText;
             }
@@ -245,7 +247,7 @@ namespace Defolderizer {
             userWriter.WriteLine(DateTime.Now + " - " + userLogText);
             userWriter.Close();
             StreamWriter developerWriter = developerLogFile.AppendText();
-            developerWriter.WriteLine(DateTime.Now + " - " + developerLogText);
+            developerWriter.WriteLine(DateTime.Now + " - " + pathFinderRegex.Replace(developerLogText,"[FILEPATH REDACTED]"));
             developerWriter.Close();
             return userLogText;
         }
