@@ -14,7 +14,7 @@ namespace Defolderizer {
 
         static void Main(string[] args) {
 
-            //SetupTestFolder();
+            SetupTestFolder();
 
 
             if (args.Length != 2) {
@@ -121,14 +121,15 @@ namespace Defolderizer {
                 Console.WriteLine(WriteLogEntry("Current File: " + file.Name, "Current File: " + "[NAME REDACTED]"));
 
                 string newFilePath = Path.Combine(parentDirectory.FullName, file.Name);
+                string newFileName = file.Name;
 
                 if (File.Exists(newFilePath)) {
                     Console.WriteLine(WriteLogEntry("File Already Exists..."));
-                    string newFileName = FindViableFileName(file, parentDirectory);
-                    newFilePath = Path.Combine(parentDirectory.FullName, newFileName) + file.Extension;
+                    newFileName = FindViableFileName(file, parentDirectory);
+                    newFilePath = Path.Combine(parentDirectory.FullName, newFileName);
                 }
 
-                Console.WriteLine(WriteLogEntry("Moving " + file.Name + "...", "Moving " + "[NAME REDACTED]" + "..."));
+                Console.WriteLine(WriteLogEntry("Moving " + newFileName + "...", "Moving " + "[NAME REDACTED]" + "..."));
 
                 try {
                     file.MoveTo(newFilePath);
@@ -157,14 +158,16 @@ namespace Defolderizer {
                 Console.WriteLine(WriteLogEntry("Current Directory: " + directory.Name, "Current Directory: " + "[NAME REDACTED]"));
 
                 string newDirectoryPath = Path.Combine(parentDirectory.FullName, directory.Name);
+                string newDirectoryName = directory.Name;
 
                 if (Directory.Exists(newDirectoryPath)) {
                     Console.WriteLine(WriteLogEntry("Directory already exists..."));
-                    string newDirectoryName = FindViableDirectoryName(directory, parentDirectory);
+                    newDirectoryName = FindViableDirectoryName(directory, parentDirectory);
                     newDirectoryPath = Path.Combine(parentDirectory.FullName, newDirectoryName);
                 }
 
-                Console.WriteLine(WriteLogEntry("Moving directory " + directory.Name + "...", "Moving directory " + "[NAME REDACTED]" + "..."));
+                Console.WriteLine(WriteLogEntry("Moving directory " + newDirectoryName + "...", "Moving directory " + "[NAME REDACTED]" + "..."));
+
                 try {
 
                     directory.MoveTo(newDirectoryPath);
@@ -189,27 +192,43 @@ namespace Defolderizer {
 
 
         public static string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
-            Console.WriteLine(WriteLogEntry("Finding new Filename..."));
-            string newFileName = file.Name[..file.Name.LastIndexOf(".")];
-            string newFilePath = Path.Combine(parentDirectory.FullName, newFileName) + file.Extension;
+            Console.WriteLine(WriteLogEntry("Finding new name..."));
+
+            string extenstionlessFileName = file.Name[..file.Name.LastIndexOf(".")];
+            string newFilePath = Path.Combine(parentDirectory.FullName, file.Name);
+            int copyCounter = 0;
+            string newFileName = "";
+           
             while (File.Exists(newFilePath)) {
-                newFileName = newFileName + "_copy";
-                newFilePath = Path.Combine(parentDirectory.FullName, newFileName) + file.Extension;
+                copyCounter ++;
+                newFileName = extenstionlessFileName + "_copy" + copyCounter + file.Extension;
+                newFilePath = Path.Combine(parentDirectory.FullName, newFileName);
+                
+                Console.WriteLine(WriteLogEntry("Checking name " + newFileName + "...", "Checking name " + "[NAME REDACTED]..."));
             }
-            Console.WriteLine(WriteLogEntry("New Name: " + newFileName + file.Extension, "New Name: " + "[NAME REDACTED]"));
+
+            Console.WriteLine(WriteLogEntry("New Name: " + newFileName , "New Name: " + "[NAME REDACTED]"));
+
             return (newFileName);
         }
 
 
         public static string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
             Console.WriteLine(WriteLogEntry("Finding new name..."));
-            string newDirectoryName = directory.Name;
-            string newDirectoryPath = Path.Combine(parentDirectory.FullName, newDirectoryName);
+
+            string newDirectoryPath = Path.Combine(parentDirectory.FullName, directory.Name);
+            int copyCounter = 1;
+            string newDirectoryName = "";
+
             while (Directory.Exists(newDirectoryPath)) {
-                newDirectoryName = newDirectoryName + "_copy";
+                copyCounter++;
+                newDirectoryName = directory.Name + "_copy" + copyCounter;
                 newDirectoryPath = Path.Combine(parentDirectory.FullName, newDirectoryName);
+
+                Console.WriteLine(WriteLogEntry("Checking name " + newDirectoryName + "...", "Checing name [NAME REDACTED]..."));
             }
             Console.WriteLine(WriteLogEntry("New Name: " + newDirectoryName, "New Name: " + "[NAME REDACTED]"));
+
             return (newDirectoryName);
         }
 
