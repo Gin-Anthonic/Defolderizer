@@ -3,6 +3,7 @@
 - [x] numbered renames
 - [x] logging
 	- [x] log file
-	- [ ] Redact path from error message
+	- [x] Redact path from error message
 	- [x] user feedback
+	- [ ] Catch removal failures in defolderize?
 - [ ] installer

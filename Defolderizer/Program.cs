@@ -38,6 +38,7 @@ namespace Defolderizer {
 
             DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
+            Console.WriteLine(WriteLogEntry("Program Started..."));
             Console.WriteLine(WriteLogEntry("Current Directory: " + currentDirectoryPath + " Mode: " + mode, "Current Directory: [NAME REDACTED] Mode: " + mode));
 
             switch (mode) {
@@ -71,6 +72,7 @@ namespace Defolderizer {
 
 
         public static void Defolderize(DirectoryInfo currentDirectory) {
+            Console.WriteLine(WriteLogEntry("Defolderizing directory " + currentDirectory.FullName,"Defolderizing directory [NAME REDACTED]"));
             foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
                 Unfold(directory);
             }
@@ -78,6 +80,7 @@ namespace Defolderizer {
 
 
         public static void RecursiveDefolderize(DirectoryInfo currentDirectory) {
+            Console.WriteLine(WriteLogEntry("Recursively defolderizing directory " + currentDirectory.FullName, "Recursively defolderizing directory [NAME REDACTED]"));
             while (currentDirectory.GetDirectories().Length > 0) {
                 Defolderize(currentDirectory);
             }
@@ -85,6 +88,7 @@ namespace Defolderizer {
 
 
         public static void Unfold(DirectoryInfo currentDirectory) {
+            Console.WriteLine(WriteLogEntry("Unfolding directory " + currentDirectory.FullName, "Unfolding directory [NAME REDACTED]"));
             if (currentDirectory.Parent == null) {
                 Console.WriteLine(WriteLogEntry("The directory " + currentDirectory.Name + " seems to have no parent, unfolding not possible... Exiting...", "The directory " + "[NAME REDACTED]" + " seems to have no parent, unfolding not possible... Exiting..."));
                 return;
