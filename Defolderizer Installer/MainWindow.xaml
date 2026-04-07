@@ -1,0 +1,38 @@
+﻿<Window x:Class="Defolderizer_Installer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Defolderizer_Installer"
+        mc:Ignorable="d"
+        Title="Installer" Height="346" Width="458" ResizeMode="CanMinimize">
+    <Grid >
+        <TextBox Name="tbInstallPath" 
+                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="261" Margin="97,16,0,0" 
+                 TextWrapping="Wrap"  
+                 LostFocus="tbInstallPath_LostFocus" GotFocus="tbInstallPath_GotFocus"
+                 />
+        <Button Name="btnBrowse" Content="Browse" 
+                HorizontalAlignment="Left" Margin="381,15,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="-0.472,-0.048" Width="44"
+                Click="btnBrowse_Click"
+                />
+        <CheckBox Name="cbInstallForAllUsers" Content="For all Users" HorizontalAlignment="Left" Margin="111,77,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.098,-1.587" IsChecked="False" Width="121" ToolTip="Add the Registry Edits for all users on this PC" Checked="cbInstallForAllUsers_Checked"/>
+        <CheckBox Name="cbAddToRightClick" Content="Add to Right-Click"
+                  HorizontalAlignment="Left" Margin="102,57,0,0" VerticalAlignment="Top" Width="121" 
+                  IsChecked="False" ToolTip="Add Registry Entries to Right Click on Directories(HIGHLY RECCOMENDED!)"
+                  Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
+                  />
+        <CheckBox Name="cbAddToPath" Content="add to PATH" HorizontalAlignment="Left" Margin="261,57,0,0" VerticalAlignment="Top" Width="89" ToolTip="For Easy CMD Access"/>
+        <Button Name="btnInstall" Content="Install" 
+                HorizontalAlignment="Left" Margin="153,121,0,0" VerticalAlignment="Top" Width="155"
+                Click="btnInstall_Click"
+                />
+        <TextBlock Name="tblOutput" HorizontalAlignment="Center" Margin="0,141,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="167" Width="413"/>
+        <Label Content="Install Path:" HorizontalAlignment="Left" Margin="18,12,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Button Content="Remove Regedits" HorizontalAlignment="Left" Margin="340,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.28,-0.499" Click="Button_Click"/>
+        <Button Content="Add Regedits" HorizontalAlignment="Left" Margin="361,96,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+
+
+
+    </Grid>
+</Window>
