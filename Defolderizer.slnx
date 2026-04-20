@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Installer/Defolderizer Installer.csproj" />
+  <Project Path="Tool/Defolderizer.csproj" />
+</Solution>
