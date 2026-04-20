@@ -40,7 +40,7 @@ namespace Defolderizer {
 
             DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
-            Console.WriteLine(WriteLogEntry("Program Started..."));
+            Console.WriteLine(WriteLogEntry("-----------------Program Started-----------------"));
             Console.WriteLine(WriteLogEntry("Current Directory: " + currentDirectoryPath + " Mode: " + mode, "Current Directory: [NAME REDACTED] Mode: " + mode));
 
             switch (mode) {
@@ -56,7 +56,7 @@ namespace Defolderizer {
             }
 
             ShowUserFeedbackPopup();
-            
+            Console.ReadKey();
         }
 
 
@@ -67,9 +67,14 @@ namespace Defolderizer {
             }
         }
 
-
+        //this is unholy as it might go into an infinte loop, either track handled dirs or set fixed recursion depth
         public static void RecursiveDefolderize(DirectoryInfo currentDirectory) {
             Console.WriteLine(WriteLogEntry("Recursively defolderizing directory " + currentDirectory.FullName, "Recursively defolderizing directory [NAME REDACTED]"));
+            DialogResult result = MessageBox.Show("You are about to recursively unfold the following directory: \n" + currentDirectory.FullName + "\nProceed?", "Here be dragons!", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No) {
+                Console.WriteLine(WriteLogEntry("Process was aborted by user"));
+                return;
+            }
             while (currentDirectory.GetDirectories().Length > 0) {
                 Defolderize(currentDirectory);
             }
@@ -255,7 +260,7 @@ namespace Defolderizer {
                 string message = "The following Files/Directories could not be moved: \n\n----------------------";
 
                 foreach (MoveFailure failure in MoveFailures) {
-                    message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CatchedException.Message;
+                    message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CaughtException.Message;
                 }
                 UserMessage = message + "\n\n----------------------\n" + UserMessage;
             }
@@ -276,11 +281,11 @@ namespace Defolderizer {
 
     public struct MoveFailure {
         public FileSystemInfo Entry {  get; set; }
-        public Exception CatchedException { get; set; }
+        public Exception CaughtException { get; set; }
 
         public MoveFailure(FileSystemInfo entry, Exception exception) {
             this.Entry = entry;
-            this.CatchedException = exception;
+            this.CaughtException = exception;
         }
     }
 }

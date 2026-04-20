@@ -7,10 +7,10 @@
 	- [x] user feedback
 
 - [x] switch to lists
+- [x] add warning on recursive
 - [ ] recursice defold infinite loop
-- [ ] optimize logging
-- [ ] add warning on recursive
 - [ ] service centric approach
+- [ ] optimize logging
 
 - [ ] installer
 
