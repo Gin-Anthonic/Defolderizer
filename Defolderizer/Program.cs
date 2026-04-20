@@ -12,7 +12,10 @@ namespace Defolderizer {
         static void Main(string[] args) {
 
             //SetupTestFolder();
-
+            Console.ReadKey();
+            Console.WriteLine("Has been run with the following arguments: " + args[0] + ", " + args[1]);
+            Console.ReadKey();
+            return;
             if (args.Length != 2) {
                 Console.WriteLine(WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
                 System.Environment.Exit(0);
@@ -31,6 +34,8 @@ namespace Defolderizer {
 
             string currentDirectoryPath = args[0];
             string mode = args[1];
+
+          
 
             DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
