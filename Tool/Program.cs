@@ -11,11 +11,12 @@ namespace Defolderizer {
 
         static void Main(string[] args) {
 
-            //SetupTestFolder();
+            SetupTestFolder();
             Console.ReadKey();
             Console.WriteLine("Has been run with the following arguments: " + args[0] + ", " + args[1]);
             Console.ReadKey();
-            return;
+            //return;
+
             if (args.Length != 2) {
                 Console.WriteLine(WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
                 System.Environment.Exit(0);
