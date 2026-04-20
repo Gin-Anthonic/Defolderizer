@@ -22,7 +22,6 @@ public partial class MainWindow : Window {
         tbInstallPath.Text = InstallPath;
         cbInstallForAllUsers.IsChecked = InstallForAllUsers;
         cbAddToRightClick.IsChecked = AddToRightClick;
-        cbAddToPath.IsChecked = AddToPath;
 
         Output = "Initialized!";
         tblOutput.Text = Output;
@@ -32,13 +31,11 @@ public partial class MainWindow : Window {
     private void tbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
 
         btnInstall.IsEnabled = IsInstallPathValid(tbInstallPath.Text);
-        tblOutput.Text = Output;
 
     }
 
     private void tbInstallPath_GotFocus(object sender, RoutedEventArgs e) {
-        Output = "Phew... its back!";
-        tblOutput.Text = Output;
+      
     }
 
 
@@ -91,7 +88,7 @@ public partial class MainWindow : Window {
         InstallPath = tbInstallPath.Text;
         InstallForAllUsers = cbInstallForAllUsers.IsChecked;
         AddToRightClick = cbAddToRightClick.IsChecked;
-        AddToPath = cbAddToPath.IsChecked;
+
 
         ClearOutput(); 
         Print("Installation started...");

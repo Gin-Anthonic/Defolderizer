@@ -22,12 +22,11 @@
                   IsChecked="False" ToolTip="Add Registry Entries to Right Click on Directories(HIGHLY RECCOMENDED!)"
                   Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
                   />
-        <CheckBox Name="cbAddToPath" Content="add to PATH" HorizontalAlignment="Left" Margin="261,57,0,0" VerticalAlignment="Top" Width="89" ToolTip="For Easy CMD Access"/>
         <Button Name="btnInstall" Content="Install" 
                 HorizontalAlignment="Left" Margin="153,121,0,0" VerticalAlignment="Top" Width="155"
                 Click="btnInstall_Click"
                 />
-        <TextBlock Name="tblOutput" HorizontalAlignment="Center" Margin="0,141,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="167" Width="413"/>
+        <TextBlock Name="tblOutput" HorizontalAlignment="Left" Margin="24,152,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="167" Width="413"/>
         <Label Content="Install Path:" HorizontalAlignment="Left" Margin="18,12,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Button Content="Remove Regedits" HorizontalAlignment="Left" Margin="340,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.28,-0.499" Click="Button_Click"/>
         <Button Content="Add Regedits" HorizontalAlignment="Left" Margin="361,96,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
