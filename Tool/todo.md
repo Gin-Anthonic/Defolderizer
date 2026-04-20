@@ -6,7 +6,7 @@
 	- [x] Redact path from error message
 	- [x] user feedback
 
-- [ ] switch to lists
+- [x] switch to lists
 - [ ] recursice defold infinite loop
 - [ ] optimize logging
 - [ ] add warning on recursive

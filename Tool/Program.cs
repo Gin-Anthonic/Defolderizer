@@ -7,7 +7,7 @@ namespace Defolderizer {
     internal class Program {
 
         public static string UserMessage { get; set; } = "";
-        public static MoveFailure[] MoveFailures { get; set; } = [];
+        public static List<MoveFailure> MoveFailures { get; set; } = [];
 
         static void Main(string[] args) {
 
@@ -132,17 +132,17 @@ namespace Defolderizer {
                 catch (IOException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(file, e));
                 }
                 catch (SecurityException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(file, e));
                 }
                 catch (UnauthorizedAccessException e) {
                     Console.WriteLine(WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(file, e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(file, e));
                 }
             }
         }
@@ -170,17 +170,17 @@ namespace Defolderizer {
                 catch (IOException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(directory,e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(directory,e));
                 }
                 catch (SecurityException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(directory, e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(directory, e));
                 }
                 catch (UnauthorizedAccessException e) {
                     Console.WriteLine(WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                     Console.WriteLine(WriteLogEntry(e.Message, e.ToString()));
-                    MoveFailures = MoveFailures.Append(new MoveFailure(directory, e)).ToArray();
+                    MoveFailures.Add(new MoveFailure(directory, e));
                 }
             }
         }
@@ -251,7 +251,7 @@ namespace Defolderizer {
 
 
         public static void ShowUserFeedbackPopup() {
-            if (MoveFailures.Length > 0) {
+            if (MoveFailures.Count > 0) {
                 string message = "The following Files/Directories could not be moved: \n\n----------------------";
 
                 foreach (MoveFailure failure in MoveFailures) {
