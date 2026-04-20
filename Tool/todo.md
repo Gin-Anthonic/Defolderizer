@@ -8,7 +8,7 @@
 
 - [x] switch to lists
 - [x] add warning on recursive
-- [ ] recursice defold infinite loop
+- [x] recursice defold infinite loop
 - [ ] service centric approach
 - [ ] optimize logging
 

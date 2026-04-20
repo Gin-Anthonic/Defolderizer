@@ -36,8 +36,6 @@ namespace Defolderizer {
             string currentDirectoryPath = args[0];
             string mode = args[1];
 
-          
-
             DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
             Console.WriteLine(WriteLogEntry("-----------------Program Started-----------------"));
@@ -51,7 +49,7 @@ namespace Defolderizer {
                     Defolderize(currentDirectory);
                     break;
                 case "recursive":
-                    RecursiveDefolderize(currentDirectory);
+                    ConfirmRecursiveDefolderize(currentDirectory);
                     break;
             }
 
@@ -67,16 +65,30 @@ namespace Defolderizer {
             }
         }
 
-        //this is unholy as it might go into an infinte loop, either track handled dirs or set fixed recursion depth
-        public static void RecursiveDefolderize(DirectoryInfo currentDirectory) {
+
+        public static void ConfirmRecursiveDefolderize(DirectoryInfo currentDirectory) {
             Console.WriteLine(WriteLogEntry("Recursively defolderizing directory " + currentDirectory.FullName, "Recursively defolderizing directory [NAME REDACTED]"));
+            
             DialogResult result = MessageBox.Show("You are about to recursively unfold the following directory: \n" + currentDirectory.FullName + "\nProceed?", "Here be dragons!", MessageBoxButtons.YesNo);
             if (result == DialogResult.No) {
                 Console.WriteLine(WriteLogEntry("Process was aborted by user"));
                 return;
             }
-            while (currentDirectory.GetDirectories().Length > 0) {
-                Defolderize(currentDirectory);
+            RecusriveDefolderize(currentDirectory);
+        }
+
+
+        /*  Reminder for Future-Smooth-Brain-Gin: 
+            Instead of repeatingly defolderizing the parent dir 
+            this recusrively goes into the current dir until it reaches
+            a dir with no subdirs and then unfolds from inside out
+            so basilc depth-first defolderizing
+        */
+        public static void RecusriveDefolderize(DirectoryInfo currentDirectory) {
+
+            foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
+                RecusriveDefolderize(directory);
+                Unfold(directory);
             }
         }
 
