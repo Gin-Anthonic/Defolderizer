@@ -16,22 +16,7 @@ internal class Program {
 
         FileLogger logger = new FileLogger();
 
-
-        if (args.Length != 2) {
-            Console.WriteLine(logger.WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
-            System.Environment.Exit(0);
-        }
-
-        if (!Directory.Exists(args[0])) {
-            Console.WriteLine(logger.WriteLogEntry("Directory specified could not be found... exiting"));
-            System.Environment.Exit(0);
-        }
-
-        string[] validArgs = ["unfold", "defolderize", "recursive"];
-        if (!validArgs.Contains(args[1])) {
-            Console.WriteLine(logger.WriteLogEntry("Invalid argument for mode... exiting"));
-            System.Environment.Exit(0);
-        }
+        if (ValidateArgs(args,logger) == false) return;
 
         string currentDirectoryPath = args[0];
         string mode = args[1];
@@ -60,6 +45,27 @@ internal class Program {
         Console.ReadKey();
     }
 
+
+    public static bool ValidateArgs(string[] args, FileLogger logger) {
+        if (args.Length != 2) {
+            Console.WriteLine(logger.WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
+            return false;
+        }
+
+        if (!Directory.Exists(args[0])) {
+            Console.WriteLine(logger.WriteLogEntry("Directory specified could not be found... exiting"));
+            return false;
+        }
+
+        string[] validArgs = ["unfold", "defolderize", "recursive"];
+        if (!validArgs.Contains(args[1])) {
+            Console.WriteLine(logger.WriteLogEntry("Invalid argument for mode... exiting"));
+            return false;
+        }
+        return true;
+    }
+
+
     public static void SetupTestFolder() {
         Directory.Delete("C:\\Users\\Work\\Desktop\\testing", true);
         Directory.CreateDirectory("C:\\Users\\Work\\Desktop\\testing");
@@ -78,6 +84,7 @@ public class Defolderizer {
         this.logger = logger;
         selectedDirectory = givenDirectory;
     }
+
 
 
     public void Unfold() {
@@ -100,6 +107,7 @@ public class Defolderizer {
         }
         RecusriveDefolderize(selectedDirectory);
     }
+
 
 
     private void Defolderize(DirectoryInfo currentDirectory) {
