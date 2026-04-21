@@ -11,6 +11,7 @@
 - [x] recursice defold infinite loop
 - [ ] service centric approach
 - [ ] optimize logging
+- [ ] interfaces?
 
 - [ ] installer
 
