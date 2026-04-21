@@ -9,9 +9,9 @@
 - [x] switch to lists
 - [x] add warning on recursive
 - [x] recursice defold infinite loop
-- [ ] service centric approach
-- [ ] optimize logging
-- [ ] interfaces?
+- [x] service centric approach
+- [x] optimize logging
+
 
 - [ ] installer
 

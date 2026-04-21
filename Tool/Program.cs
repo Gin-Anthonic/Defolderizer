@@ -14,8 +14,7 @@ internal class Program {
         Console.ReadKey();
         //return;
 
-        Logger logger = new Logger();
-        Defolderizer defolderizer = new Defolderizer(logger);
+        FileLogger logger = new FileLogger();
 
 
         if (args.Length != 2) {
@@ -39,18 +38,20 @@ internal class Program {
 
         DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
+        Defolderizer defolderizer = new Defolderizer(currentDirectory,logger);
+
         Console.WriteLine(logger.WriteLogEntry("-----------------Program Started-----------------"));
         Console.WriteLine(logger.WriteLogEntry("Current Directory: " + currentDirectoryPath + " Mode: " + mode, "Current Directory: [NAME REDACTED] Mode: " + mode));
 
         switch (mode) {
             case "unfold":
-                defolderizer.Unfold(currentDirectory);
+                defolderizer.Unfold();
                 break;
             case "defolderize":
-                defolderizer.Defolderize(currentDirectory);
+                defolderizer.Defolderize();
                 break;
             case "recursive":
-                defolderizer.ConfirmRecursiveDefolderize(currentDirectory);
+                defolderizer.RecursiveDefolderize();
                 break;
         }
 
@@ -70,31 +71,42 @@ internal class Program {
 
 public class Defolderizer {
 
-    public Logger logger { get; set; }
+    private readonly FileLogger logger;
+    private readonly DirectoryInfo selectedDirectory;
 
-
-    public Defolderizer(Logger logger) {
+    public Defolderizer(DirectoryInfo givenDirectory, FileLogger logger) {
         this.logger = logger;
+        selectedDirectory = givenDirectory;
     }
 
 
-    public void Defolderize(DirectoryInfo currentDirectory) {
-        Console.WriteLine(logger.WriteLogEntry("Defolderizing directory " + currentDirectory.FullName, "Defolderizing directory [NAME REDACTED]"));
-        foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
-            Unfold(directory);
-        }
+    public void Unfold() {
+        this.Unfold(selectedDirectory);
     }
 
 
-    public void ConfirmRecursiveDefolderize(DirectoryInfo currentDirectory) {
-        Console.WriteLine(logger.WriteLogEntry("Recursively defolderizing directory " + currentDirectory.FullName, "Recursively defolderizing directory [NAME REDACTED]"));
+    public void Defolderize() {
+        this.Defolderize(selectedDirectory);
+    }
 
-        DialogResult result = MessageBox.Show("You are about to recursively unfold the following directory: \n" + currentDirectory.FullName + "\nProceed?", "Here be dragons!", MessageBoxButtons.YesNo);
+
+    public void RecursiveDefolderize() {
+        Console.WriteLine(logger.WriteLogEntry("Recursively defolderizing directory " + selectedDirectory.FullName, "Recursively defolderizing directory [NAME REDACTED]"));
+
+        DialogResult result = MessageBox.Show("You are about to recursively unfold the following directory: \n" + selectedDirectory.FullName + "\nProceed?", "Here be dragons!", MessageBoxButtons.YesNo);
         if (result == DialogResult.No) {
             Console.WriteLine(logger.WriteLogEntry("Process was aborted by user"));
             return;
         }
-        RecusriveDefolderize(currentDirectory);
+        RecusriveDefolderize(selectedDirectory);
+    }
+
+
+    private void Defolderize(DirectoryInfo currentDirectory) {
+        Console.WriteLine(logger.WriteLogEntry("Defolderizing directory " + currentDirectory.FullName, "Defolderizing directory [NAME REDACTED]"));
+        foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
+            Unfold(directory);
+        }
     }
 
 
@@ -104,7 +116,7 @@ public class Defolderizer {
         a dir with no subdirs and then unfolds from inside out
         so basilc depth-first defolderizing
     */
-    public void RecusriveDefolderize(DirectoryInfo currentDirectory) {
+    private void RecusriveDefolderize(DirectoryInfo currentDirectory) {
 
         foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
             RecusriveDefolderize(directory);
@@ -113,7 +125,7 @@ public class Defolderizer {
     }
 
 
-    public void Unfold(DirectoryInfo currentDirectory) {
+    private void Unfold(DirectoryInfo currentDirectory) {
         Console.WriteLine(logger.WriteLogEntry("Unfolding directory " + currentDirectory.FullName, "Unfolding directory [NAME REDACTED]"));
 
         if (currentDirectory.Parent == null) {
@@ -267,7 +279,7 @@ public class Defolderizer {
 }
 
 
-public class Logger {
+public class FileLogger {
 
     public string UserMessage { get; set; } = "";
     public List<MoveFailure> MoveFailures { get; set; } = [];
@@ -281,7 +293,7 @@ public class Logger {
     private readonly Regex filePathFinderRegex = new Regex("'.*[\\\\/].*'");
 
 
-    public Logger() {
+    public FileLogger() {
         userWriter = userLogFile.AppendText();
         developerWriter = developerLogFile.AppendText();
     }
@@ -331,4 +343,4 @@ public struct MoveFailure {
         this.CaughtException = exception;
     }
 }
-
+   
