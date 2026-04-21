@@ -24,7 +24,7 @@ public partial class MainWindow : Window {
         cbAddToRightClick.IsChecked = AddToRightClick;
 
         Output = "Initialized!";
-        tblOutput.Text = Output;
+        tblOutput.Text = "Baba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\n";
 
     }
 

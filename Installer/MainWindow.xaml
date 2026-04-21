@@ -5,31 +5,94 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Defolderizer_Installer"
         mc:Ignorable="d"
-        Title="Installer" Height="346" Width="458" ResizeMode="CanMinimize">
+        Title="Installer" Height="400" Width="450" MinWidth="450" MinHeight="400">
     <Grid >
-        <TextBox Name="tbInstallPath" 
-                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="261" Margin="97,16,0,0" 
-                 TextWrapping="Wrap"  
-                 LostFocus="tbInstallPath_LostFocus" GotFocus="tbInstallPath_GotFocus"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="60" />
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Rectangle Grid.Row="1" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
+        <Rectangle Grid.Row="3" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
+
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*" />
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="20*" />
+            </Grid.ColumnDefinitions>
+            
+            <Label Content="Install Path:" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <TextBox Name="tbInstallPath"   Grid.Column="1"
+                     VerticalAlignment="Center" HorizontalAlignment="Center"
+                     Width="280"
+                     LostFocus="tbInstallPath_LostFocus" GotFocus="tbInstallPath_GotFocus"
                  />
-        <Button Name="btnBrowse" Content="Browse" 
-                HorizontalAlignment="Left" Margin="381,15,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="-0.472,-0.048" Width="44"
-                Click="btnBrowse_Click"
+            <Button Name="btnBrowse" Content="Browse" 
+                    Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"
+                    Width="44" 
+                    Click="btnBrowse_Click"
                 />
-        <CheckBox Name="cbInstallForAllUsers" Content="For all Users" HorizontalAlignment="Left" Margin="111,77,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.098,-1.587" IsChecked="False" Width="121" ToolTip="Add the Registry Edits for all users on this PC" Checked="cbInstallForAllUsers_Checked"/>
-        <CheckBox Name="cbAddToRightClick" Content="Add to Right-Click"
-                  HorizontalAlignment="Left" Margin="102,57,0,0" VerticalAlignment="Top" Width="121" 
-                  IsChecked="False" ToolTip="Add Registry Entries to Right Click on Directories(HIGHLY RECCOMENDED!)"
-                  Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
+        </Grid>
+        
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition MinWidth="180" MaxWidth="300"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+
+            <CheckBox Name="cbInstallForAllUsers" 
+                      Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                      Width="120"
+                      Content="For all Users" 
+                      ToolTip="Add the Registry Edits for all users on this PC" 
+                      IsChecked="False" Checked="cbInstallForAllUsers_Checked"/>
+            <CheckBox Name="cbAddToRightClick" 
+                      Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right"
+                      Width="120"
+                      Content="Add to Right-Click"
+                      ToolTip="Add Registry Entries to Right Click on Directories(HIGHLY RECCOMENDED!)"
+                      IsChecked="False" Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
                   />
-        <Button Name="btnInstall" Content="Install" 
-                HorizontalAlignment="Left" Margin="153,121,0,0" VerticalAlignment="Top" Width="155"
+
+            <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"
+                   Content="Position:" />
+            <ComboBox Name="cmbPosition"
+                      Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                      Width="110" SelectedIndex="0">
+                <ComboBoxItem Content="Top" />
+                <ComboBoxItem Content="Bottom" />
+                <ComboBoxItem Content="System Default" />
+
+            </ComboBox>
+            <Button Content="Remove Regedits" 
+                    Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Click="Button_Click"/>
+            <Button Content="Add Regedits"
+                    Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Click="Button_Click_1"/>
+        </Grid>
+
+        <Button Name="btnInstall" Content="Install" Grid.Row="4"
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
+                Width="200" Height="40"
                 Click="btnInstall_Click"
                 />
-        <TextBlock Name="tblOutput" HorizontalAlignment="Left" Margin="24,152,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="167" Width="413"/>
-        <Label Content="Install Path:" HorizontalAlignment="Left" Margin="18,12,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Button Content="Remove Regedits" HorizontalAlignment="Left" Margin="340,121,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.28,-0.499" Click="Button_Click"/>
-        <Button Content="Add Regedits" HorizontalAlignment="Left" Margin="361,96,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
+        <TextBlock Name="tblOutput" Grid.Row="5"
+                   TextWrapping="Wrap" Text="TextBlock" 
+                   VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10"
+                   Height="Auto" Width="400"/>
+
 
 
 
