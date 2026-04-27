@@ -11,10 +11,11 @@
 - [x] recursice defold infinite loop
 - [x] service centric approach
 - [x] optimize logging#
-- [ ] records instead of class
+- [X] records instead of class
 
 
 - [ ] installer
 
 ## Improvement Ideas:
 - [ ] Config
+- [ ] handle folder removal failure as record

@@ -46,7 +46,7 @@ internal class Program {
     }
 
 
-    public static bool ValidateArgs(string[] args, FileLogger logger) {
+    private static bool ValidateArgs(string[] args, FileLogger logger) {
         if (args.Length != 2) {
             Console.WriteLine(logger.WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
             return false;
@@ -66,7 +66,7 @@ internal class Program {
     }
 
 
-    public static void SetupTestFolder() {
+    private static void SetupTestFolder() {
         Directory.Delete("C:\\Users\\Work\\Desktop\\testing", true);
         Directory.CreateDirectory("C:\\Users\\Work\\Desktop\\testing");
         FileSystem.CopyDirectory("C:\\Users\\Work\\Documents\\gin", "C:\\Users\\Work\\Desktop\\testing\\gin");
@@ -147,7 +147,7 @@ public class Defolderizer {
 
         if (Directory.EnumerateFileSystemEntries(currentDirectory.FullName).Count() != 0) {
             Console.WriteLine(logger.WriteLogEntry("Directory is not Empty... Removal Failed."));
-            logger.UserMessage += "\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n";
+            logger.AddToUserFeedback("\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n");
             return;
         }
 
@@ -157,17 +157,17 @@ public class Defolderizer {
         catch (IOException e) {
             Console.WriteLine(logger.WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
             Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-            logger.UserMessage += "\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n";
+            logger.AddToUserFeedback("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
         }
         catch (UnauthorizedAccessException e) {
             Console.WriteLine(logger.WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
             Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-            logger.UserMessage += "\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n";
+            logger.AddToUserFeedback("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
         }
     }
 
 
-    public void MoveFiles(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
+    private void MoveFiles(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
         FileInfo[] files = currentDirectory.GetFiles();
         foreach (FileInfo file in files) {
             Console.WriteLine(logger.WriteLogEntry("Current File: " + file.Name, "Current File: " + "[NAME REDACTED]"));
@@ -189,23 +189,23 @@ public class Defolderizer {
             catch (IOException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(file, e));
+                logger.AddMoveFailure(new MoveFailure(file, e));
             }
             catch (SecurityException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(file, e));
+                logger.AddMoveFailure(new MoveFailure(file, e));
             }
             catch (UnauthorizedAccessException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(file, e));
+                logger.AddMoveFailure(new MoveFailure(file, e));
             }
         }
     }
 
 
-    public void MoveDirectories(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
+    private void MoveDirectories(DirectoryInfo currentDirectory, DirectoryInfo parentDirectory) {
         foreach (DirectoryInfo directory in currentDirectory.GetDirectories()) {
             Console.WriteLine(logger.WriteLogEntry("Current Directory: " + directory.Name, "Current Directory: " + "[NAME REDACTED]"));
 
@@ -227,23 +227,23 @@ public class Defolderizer {
             catch (IOException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(directory, e));
+                logger.AddMoveFailure(new MoveFailure(directory, e));
             }
             catch (SecurityException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(directory, e));
+                logger.AddMoveFailure(new MoveFailure(directory, e));
             }
             catch (UnauthorizedAccessException e) {
                 Console.WriteLine(logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(logger.WriteLogEntry(e.Message, e.ToString()));
-                logger.MoveFailures.Add(new MoveFailure(directory, e));
+                logger.AddMoveFailure(new MoveFailure(directory, e));
             }
         }
     }
 
 
-    public string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
+    private string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
         Console.WriteLine(logger.WriteLogEntry("Finding new name..."));
 
         string extenstionlessFileName = file.Name[..file.Name.LastIndexOf(".")];
@@ -289,8 +289,8 @@ public class Defolderizer {
 
 public class FileLogger {
 
-    public string UserMessage { get; set; } = "";
-    public List<MoveFailure> MoveFailures { get; set; } = [];
+    private string UserFeedback = "";
+    private List<MoveFailure> MoveFailures = [];
 
     private readonly FileInfo userLogFile = new FileInfo("userLog.txt");
     private readonly FileInfo developerLogFile = new FileInfo("developerLog.txt");
@@ -318,6 +318,16 @@ public class FileLogger {
     }
 
 
+    public void AddToUserFeedback(string messageContent) {
+        UserFeedback += messageContent;
+    }
+
+
+    public void AddMoveFailure(MoveFailure moveFailure) {
+        MoveFailures.Add(moveFailure);
+    }
+
+
     public void ShowUserFeedbackPopup() {
         if (MoveFailures.Count > 0) {
             string message = "The following Files/Directories could not be moved: \n\n----------------------";
@@ -325,11 +335,11 @@ public class FileLogger {
             foreach (MoveFailure failure in MoveFailures) {
                 message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CaughtException.Message;
             }
-            UserMessage = message + "\n\n----------------------\n" + UserMessage;
+            UserFeedback = message + "\n\n----------------------\n" + UserFeedback;
         }
 
-        if (UserMessage != "") {
-            MessageBox.Show(UserMessage);
+        if (UserFeedback != "") {
+            MessageBox.Show(UserFeedback);
         }
     }
 
