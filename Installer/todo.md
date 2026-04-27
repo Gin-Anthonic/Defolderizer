@@ -1,7 +1,16 @@
 - [x] better layout
 - [x] decide context menu position
 	- [x] option?
-- [ ] exception handeling better
-	- [ ] if already installed
-	- [ ] Seperately adding regedits
-- [ ] organize the install and ui logic
+- [x] organize the install and ui logic
+
+- [ ] bind position combobox
+- [ ] auto disable for all users ?
+- [ ] better layout for regedit buttons
+- [ ] feedback on if installation possible or regedits exist
+- [ ] link buttons enabled to existing regedits
+- [ ] cleanup codebehind
+
+- [ ] add check for regkeys existing
+- [ ] add check for already installed
+- [ ] cleanup after failed install ?
+- [ ] install logs
