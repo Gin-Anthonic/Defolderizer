@@ -8,7 +8,7 @@ internal class Program {
 
     static void Main(string[] args) {
 
-        SetupTestFolder();
+        //SetupTestFolder();
         Console.ReadKey();
         Console.WriteLine("Has been run with the following arguments: " + args[0] + ", " + args[1]);
         Console.ReadKey();
@@ -342,13 +342,5 @@ public class FileLogger {
 }
 
 
-public struct MoveFailure {
-    public FileSystemInfo Entry { get; set; }
-    public Exception CaughtException { get; set; }
+public record MoveFailure(FileSystemInfo Entry, Exception CaughtException);
 
-    public MoveFailure(FileSystemInfo entry, Exception exception) {
-        this.Entry = entry;
-        this.CaughtException = exception;
-    }
-}
-   

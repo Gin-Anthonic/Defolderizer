@@ -10,7 +10,8 @@
 - [x] add warning on recursive
 - [x] recursice defold infinite loop
 - [x] service centric approach
-- [x] optimize logging
+- [x] optimize logging#
+- [ ] records instead of class
 
 
 - [ ] installer
