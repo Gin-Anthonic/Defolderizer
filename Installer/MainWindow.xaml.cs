@@ -79,7 +79,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallPath = "C:\\Program Files\\Defolderizer";
         InstallForAllUsers = true;
         AddToRightClick = true;
+
         Output = "Initialized!\n";
+        Print("All Users: " + registryService.HKLMKeysExist());
+        Print("Current User: " + registryService.HKCUKeysExist());
     }
 
 
@@ -109,7 +112,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void Button_Click(object sender, RoutedEventArgs e) {
-        registryService.RemoveRegistryEdits();
+        registryService.RemoveRegistryEdits(InstallForAllUsers);
     }
 
     private void Button_Click_1(object sender, RoutedEventArgs e) {

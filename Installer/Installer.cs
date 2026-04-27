@@ -72,6 +72,7 @@ public class Installer {
 
 
     public void AddRegEdits() {
+        mainWindow.Print("Adding regedits. Forallusers: " + forAllUsers);
         registryService.AddRegistryEdits(forAllUsers, installPath, menuPosition);
     }
 
