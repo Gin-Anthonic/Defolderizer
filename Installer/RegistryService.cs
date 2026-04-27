@@ -5,7 +5,17 @@ namespace Defolderizer_Installer;
 
 public class RegistryService {
 
+    private readonly string[] iconKeyPaths = [
+        "Software\\Classes\\Directory\\shell\\Defolderize",
+        "Software\\Classes\\Directory\\shell\\Unfold",
+        "Software\\Classes\\Directory\\shell\\Defolderize Recursive"
+    ];
 
+    private readonly string[] backgroundKeyPaths = [
+        "Software\\Classes\\Directory\\Background\\shell\\Defolderize",
+        "Software\\Classes\\Directory\\Background\\shell\\Unfold",
+        "Software\\Classes\\Directory\\Background\\shell\\Defolderize Recursive"
+    ];
 
     public void AddRegistryEdits(bool? forAllUsers, string installPath, string position = "top") {
         string keyRoot = "";
@@ -48,13 +58,12 @@ public class RegistryService {
             key = Registry.CurrentUser;
         }
 
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\Background\\shell\\Defolderize");
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\Background\\shell\\Unfold");
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\Background\\shell\\Defolderize Recursive");
-
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\shell\\Defolderize");
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\shell\\Unfold");
-        key.DeleteSubKeyTree("Software\\Classes\\Directory\\shell\\Defolderize Recursive");
+        foreach (string path in iconKeyPaths) {
+            key.DeleteSubKeyTree(path);
+        }
+        foreach (string path in backgroundKeyPaths) {
+            key.DeleteSubKeyTree(path);
+        }
 
     }
 
@@ -62,45 +71,32 @@ public class RegistryService {
     public bool HKLMKeysExist() {
         bool result = true;
         RegistryKey? key;
-        string iconPath = "Software\\Classes\\Directory\\shell\\";
-        string backgroundPath = "Software\\Classes\\Directory\\Background\\shell\\";
 
-        key = Registry.LocalMachine.OpenSubKey(iconPath + "Defolderize");
-        if (key == null) result = false;
-        key = Registry.LocalMachine.OpenSubKey(iconPath + "Unfold");
-        if (key == null) result = false;
-        key = Registry.LocalMachine.OpenSubKey(iconPath + "Defolderize Recursive");
-        if (key == null) result = false;
+        foreach (string path in iconKeyPaths) {
+            key = Registry.LocalMachine.OpenSubKey(path);
+            if (key == null) result = false;
+        }
 
-        key = Registry.LocalMachine.OpenSubKey(backgroundPath + "Defolderize");
-        if (key == null) result = false;
-        key = Registry.LocalMachine.OpenSubKey(backgroundPath + "Unfold");
-        if (key == null) result = false;
-        key = Registry.LocalMachine.OpenSubKey(backgroundPath + "Defolderize Recursive");
-        if (key == null) result = false;
-
+        foreach (string path in backgroundKeyPaths) {
+            key = Registry.LocalMachine.OpenSubKey(path);
+            if (key == null) result = false;
+        }
         return result;
     }
 
     public bool HKCUKeysExist() {
         bool result = true;
         RegistryKey? key;
-        string iconPath = "Software\\Classes\\Directory\\shell\\";
-        string backgroundPath = "Software\\Classes\\Directory\\Background\\shell\\";
 
-        key = Registry.CurrentUser.OpenSubKey(iconPath + "Defolderize");
-        if (key == null) result = false;
-        key = Registry.CurrentUser.OpenSubKey(iconPath + "Unfold");
-        if (key == null) result = false;
-        key = Registry.CurrentUser.OpenSubKey(iconPath + "Defolderize Recursive");
-        if (key == null) result = false;
+        foreach (string path in iconKeyPaths) {
+            key = Registry.CurrentUser.OpenSubKey(path);
+            if (key == null) result = false;
+        }
 
-        key = Registry.CurrentUser.OpenSubKey(backgroundPath + "Defolderize");
-        if (key == null) result = false;
-        key = Registry.CurrentUser.OpenSubKey(backgroundPath + "Unfold");
-        if (key == null) result = false;
-        key = Registry.CurrentUser.OpenSubKey(backgroundPath + "Defolderize Recursive");
-        if (key == null) result = false;
+        foreach (string path in backgroundKeyPaths) {
+            key = Registry.CurrentUser.OpenSubKey(path);
+            if (key == null) result = false;
+        }
 
         return result;
     }
