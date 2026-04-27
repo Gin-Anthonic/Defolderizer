@@ -30,7 +30,8 @@
             <TextBox Name="tbInstallPath"   Grid.Column="1"
                      VerticalAlignment="Center" HorizontalAlignment="Center"
                      Width="280"
-                     LostFocus="tbInstallPath_LostFocus" GotFocus="tbInstallPath_GotFocus"
+                     LostFocus="tbInstallPath_LostFocus" 
+                     Text="{Binding InstallPath}"
                  />
             <Button Name="btnBrowse" Content="Browse" 
                     Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"
@@ -42,7 +43,7 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition MinWidth="180" MaxWidth="300"/>
+                <ColumnDefinition Width="195"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -52,17 +53,19 @@
 
 
             <CheckBox Name="cbInstallForAllUsers" 
-                      Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"
-                      Width="120"
+                      Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right"
+                      Width="100"
                       Content="For all Users" 
                       ToolTip="Add  for all users on this PC" 
-                      IsChecked="False" Checked="cbInstallForAllUsers_Checked"/>
+                      IsChecked="{Binding InstallForAllUsers}"
+                      IsEnabled="{Binding AddToRightClick}"
+                      />
             <CheckBox Name="cbAddToRightClick" 
                       Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right"
                       Width="120"
                       Content="Add to Right-Click"
                       ToolTip="Add to Right Click Menu on Directories"
-                      IsChecked="False" Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
+                      IsChecked="{Binding AddToRightClick}" 
                   />
 
             <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"
@@ -71,6 +74,7 @@
                       Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
                       Width="110" SelectedIndex="0"
                       ToolTip="Where the options in the Menu will appear&#x0a;System Default: Let Windows decide where the options appear"
+                      
                       >
                 <ComboBoxItem Content="Bottom" />
                 <ComboBoxItem Content="Top" />
@@ -78,10 +82,10 @@
 
             </ComboBox>
             <Button Content="Remove Menu Items" 
-                    Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" 
                     Click="Button_Click"/>
             <Button Content="Add Menu Items"
-                    Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
                     Click="Button_Click_1"/>
         </Grid>
 
@@ -91,9 +95,11 @@
                 Click="btnInstall_Click"
                 />
         <TextBlock Name="tblOutput" Grid.Row="5"
-                   TextWrapping="Wrap" Text="TextBlock" 
+                   TextWrapping="Wrap"
                    VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10"
-                   Height="Auto" Width="400"/>
+                   Height="Auto" Width="400"
+                   Text="{Binding Output}"
+                   />
 
 
 

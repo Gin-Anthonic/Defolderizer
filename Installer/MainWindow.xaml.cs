@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Win32;
+using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -7,23 +8,77 @@ using System.Windows;
 namespace Defolderizer_Installer;
 
 
-public partial class MainWindow : Window {
-    public string InstallPath { get; set; } = "C:\\Program Files\\Defolderizer";
-    public bool? InstallForAllUsers { get; set; } = true;
-    public bool? AddToRightClick { get; set; } = true;
+public partial class MainWindow : Window, INotifyPropertyChanged {
     
+    private string installPath = "";
 
-    public string Output { get; set; } = "";
-    public Installer installer;
+    public string InstallPath {
+        get { return installPath; }
+        set { 
+            installPath = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPath"));
+        }
+    }
+
+
+    private bool? installForAllUsers;
+
+    public bool? InstallForAllUsers {
+        get { return installForAllUsers; }
+        set { 
+            installForAllUsers = value; 
+            PropertyChanged?.Invoke(this,new PropertyChangedEventArgs("InstallForAllUsers"));
+        }
+    }
+
+
+    private bool? addToRightClick;
+
+    public bool? AddToRightClick {
+        get { return addToRightClick; }
+        set { 
+            addToRightClick = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddToRightClick"));
+        }
+    }
+
+
+    private string position = "";
+
+    public string Position {
+        get { return position; }
+        set { 
+            position = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Position"));
+        }
+    }
+
+
+
+    private string output = "";
+
+    public string Output {
+        get { return output; }
+        set { 
+            output = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Output"));
+        }
+    }
+
+
+    private readonly Installer installer;
+
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
 
     public MainWindow() {
+        DataContext = this;
         InitializeComponent();
         installer = new Installer(this);
-        tbInstallPath.Text = InstallPath;
-        cbInstallForAllUsers.IsChecked = InstallForAllUsers;
-        cbAddToRightClick.IsChecked = AddToRightClick;
-
+        InstallPath = "C:\\Program Files\\Defolderizer";
+        InstallForAllUsers = true;
+        AddToRightClick = true; 
         Output = "Initialized!\n";
         
 
@@ -32,11 +87,6 @@ public partial class MainWindow : Window {
     private void tbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
 
         btnInstall.IsEnabled = IsInstallPathValid(tbInstallPath.Text);
-
-    }
-
-    private void tbInstallPath_GotFocus(object sender, RoutedEventArgs e) {
-      
     }
 
 
@@ -46,24 +96,13 @@ public partial class MainWindow : Window {
         return System.IO.Path.IsPathFullyQualified(path) && !badChars.IsMatch(path);
     }
 
-    private void cbInstallForAllUsers_Checked(object sender, RoutedEventArgs e) {
-
-    }
-
-    private void cbAddToRightClick_Unchecked(object sender, RoutedEventArgs e) {
-        cbInstallForAllUsers.IsEnabled = false;
-    }
-
-    private void cbAddToRightClick_Checked(object sender, RoutedEventArgs e) {
-        cbInstallForAllUsers.IsEnabled = true;
-    }
 
     private void btnBrowse_Click(object sender, RoutedEventArgs e) {
         OpenFolderDialog dialog = new OpenFolderDialog();
         dialog.InitialDirectory = "C:\\Program Files";
         bool? dialogResult = dialog.ShowDialog();
         if (dialogResult == true) {
-            tbInstallPath.Text = dialog.FolderName+"\\Defolderizer";
+            InstallPath = dialog.FolderName+"\\Defolderizer";
         }
 
     }
@@ -75,14 +114,12 @@ public partial class MainWindow : Window {
 
 
     public void Print(string text) {
-        Output += text+"\n";
-        tblOutput.Text = Output;
+        Output += text+"\n"; 
     }
 
 
     public void ClearOutput() {
-        Output = "";
-        tblOutput.Text = Output;
+        Output = "";   
     }
 
 
