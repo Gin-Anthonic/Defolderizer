@@ -55,13 +55,13 @@
                       Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right"
                       Width="120"
                       Content="For all Users" 
-                      ToolTip="Add the Registry Edits for all users on this PC" 
+                      ToolTip="Add  for all users on this PC" 
                       IsChecked="False" Checked="cbInstallForAllUsers_Checked"/>
             <CheckBox Name="cbAddToRightClick" 
                       Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right"
                       Width="120"
                       Content="Add to Right-Click"
-                      ToolTip="Add Registry Entries to Right Click on Directories(HIGHLY RECCOMENDED!)"
+                      ToolTip="Add to Right Click Menu on Directories"
                       IsChecked="False" Unchecked="cbAddToRightClick_Unchecked" Checked="cbAddToRightClick_Checked"
                   />
 
@@ -69,16 +69,18 @@
                    Content="Position:" />
             <ComboBox Name="cmbPosition"
                       Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                      Width="110" SelectedIndex="0">
-                <ComboBoxItem Content="Top" />
+                      Width="110" SelectedIndex="0"
+                      ToolTip="Where the options in the Menu will appear&#x0a;System Default: Let Windows decide where the options appear"
+                      >
                 <ComboBoxItem Content="Bottom" />
+                <ComboBoxItem Content="Top" />
                 <ComboBoxItem Content="System Default" />
 
             </ComboBox>
-            <Button Content="Remove Regedits" 
+            <Button Content="Remove Menu Items" 
                     Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"
                     Click="Button_Click"/>
-            <Button Content="Add Regedits"
+            <Button Content="Add Menu Items"
                     Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"
                     Click="Button_Click_1"/>
         </Grid>

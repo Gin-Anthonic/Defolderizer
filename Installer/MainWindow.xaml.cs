@@ -11,20 +11,21 @@ public partial class MainWindow : Window {
     public string InstallPath { get; set; } = "C:\\Program Files\\Defolderizer";
     public bool? InstallForAllUsers { get; set; } = true;
     public bool? AddToRightClick { get; set; } = true;
-    public bool? AddToPath { get; set; } = false;
+    
 
     public string Output { get; set; } = "";
+    public Installer installer;
 
 
     public MainWindow() {
         InitializeComponent();
-
+        installer = new Installer(this);
         tbInstallPath.Text = InstallPath;
         cbInstallForAllUsers.IsChecked = InstallForAllUsers;
         cbAddToRightClick.IsChecked = AddToRightClick;
 
-        Output = "Initialized!";
-        tblOutput.Text = "Baba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\nBaba is you!\n";
+        Output = "Initialized!\n";
+        
 
     }
 
@@ -68,7 +69,8 @@ public partial class MainWindow : Window {
     }
 
     private void btnInstall_Click(object sender, RoutedEventArgs e) {
-        Install();
+        installer.SetSettings(InstallPath,AddToRightClick,InstallForAllUsers,"top");
+        installer.Install();
     }
 
 
@@ -84,93 +86,7 @@ public partial class MainWindow : Window {
     }
 
 
-    public void Install() {
-        InstallPath = tbInstallPath.Text;
-        InstallForAllUsers = cbInstallForAllUsers.IsChecked;
-        AddToRightClick = cbAddToRightClick.IsChecked;
-
-
-        ClearOutput(); 
-        Print("Installation started...");
-        Print("Creating Folder..");
-        
-        DirectoryInfo installDirectory;
-        try {
-            installDirectory = Directory.CreateDirectory(InstallPath);
-        }
-        catch (Exception e) {
-            MessageBox.Show("Failed to Create Directory at \n" + InstallPath + " due to the following error: \n" + e.Message,"Error!",MessageBoxButton.OK,MessageBoxImage.Error);
-            Print("Failed to Create Directory at " + InstallPath + " due to the following error: \n" + e.Message);
-            return;
-        }
-
-        Print("Directory creation successful!");
-        Print("Copying files...");
-
-        try {
-            CopyFiles();
-        }
-        catch (Exception e) {
-            MessageBox.Show("Failed to copy files to \n" + InstallPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            Print("Failed to copy files to \n" + InstallPath + " due to the following error: \n" + e.Message);
-            return;
-        }
-
-        Print("Copying files successful");
-        Print("Adding registry entries...");
-
-        if (AddToRightClick == true) {
-            try {
-                AddRegistryEdits();
-            }
-            catch(Exception e) {
-                MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                Print("Registry edits failed due to the following error: \n" + e.Message);
-                return;
-            }
-            Print("Registry Edits Successful!");
-        }
-    }
-
-
-    public void CopyFiles() {
-        FileInfo applicationFile = new FileInfo("defolderizer.exe");
-        FileInfo configFile = new FileInfo("config.ini");
-        applicationFile.CopyTo(Path.Combine(InstallPath, applicationFile.Name));
-        configFile.CopyTo(Path.Combine(InstallPath, configFile.Name));
-    }
-
-
-    public void AddRegistryEdits() {
-        string keyRoot = "";
-        string subKey = "";
-        string position = "top";
-        if (InstallForAllUsers == true) {
-            keyRoot = "HKEY_CLASSES_ROOT";
-            subKey = "Directory";
-        }
-        else if (InstallForAllUsers == false) {
-            keyRoot = "HKEY_CURRENT_USER";
-            subKey = "Software\\Classes\\Directory";
-        }
-        string backgroundKey = keyRoot + "\\" + subKey + "\\Background\\shell\\";
-        string iconKey = keyRoot + "\\" + subKey + "\\shell\\";
-
-        Registry.SetValue(backgroundKey + "\\Defolderize\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
-        Registry.SetValue(backgroundKey + "\\Defolderize","position",position);
-        Registry.SetValue(iconKey + "\\Defolderize\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
-        Registry.SetValue(iconKey + "\\Defolderize","position",position);
-
-        Registry.SetValue(backgroundKey + "\\Unfold\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"unfold\"");
-        Registry.SetValue(backgroundKey + "\\Unfold", "position", position);
-        Registry.SetValue(iconKey + "\\Unfold\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"unfold\"");
-        Registry.SetValue(iconKey + "\\Unfold", "position", position);
-
-        Registry.SetValue(backgroundKey + "\\Defolderize Recursive\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"recursive\"");
-        Registry.SetValue(backgroundKey + "\\Defolderize Recursive", "position", position);
-        Registry.SetValue(iconKey + "\\Defolderize Recursive\\command", "", InstallPath + "\\defolderizer.exe \"%V\" \"recursive\"");
-        Registry.SetValue(iconKey + "\\Defolderize Recursive", "position", position);
-    }
+    
 
 
     private void Button_Click(object sender, RoutedEventArgs e) {
@@ -190,8 +106,113 @@ public partial class MainWindow : Window {
     }
 
     private void Button_Click_1(object sender, RoutedEventArgs e) {
-        AddRegistryEdits();
+        installer.AddRegistryEdits();
     }
 }
 
+public class Installer {
 
+    private string installPath = "";
+    private bool? addToRightClick;
+    private bool? forAllUsers;
+    private string menuPosition = "";
+    private MainWindow mainWindow;
+
+    public Installer(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+
+    public void SetSettings(string installPath, bool? addToRightClick, bool? forAllUsers, string menuPosition) {
+        this.installPath = installPath;
+        this.addToRightClick = addToRightClick;
+        this.forAllUsers = forAllUsers;
+        this.menuPosition = menuPosition;
+    }
+
+
+    public void Install() {
+
+        mainWindow.ClearOutput();
+        mainWindow.Print("Installation started...");
+        mainWindow.Print("Creating Folder..");
+
+        DirectoryInfo installDirectory;
+        try {
+            installDirectory = Directory.CreateDirectory(installPath);
+        }
+        catch (Exception e) {
+            MessageBox.Show("Failed to Create Directory at \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            mainWindow.Print("Failed to Create Directory at " + installPath + " due to the following error: \n" + e.Message);
+            return;
+        }
+
+        mainWindow.Print("Directory creation successful!");
+        mainWindow.Print("Copying files...");
+
+        try {
+            CopyFiles();
+        }
+        catch (Exception e) {
+            MessageBox.Show("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            mainWindow.Print("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message);
+            return;
+        }
+
+        mainWindow.Print("Copying files successful");
+        mainWindow.Print("Adding registry entries...");
+
+        if (addToRightClick == true) {
+            try {
+                AddRegistryEdits();
+            }
+            catch (Exception e) {
+                MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
+                return;
+            }
+            mainWindow.Print("Registry Edits Successful!");
+        }
+    }
+
+
+    public void CopyFiles() {
+        FileInfo applicationFile = new FileInfo("defolderizer.exe");
+        FileInfo configFile = new FileInfo("config.ini");
+        applicationFile.CopyTo(Path.Combine(installPath, applicationFile.Name));
+        configFile.CopyTo(Path.Combine(installPath, configFile.Name));
+    }
+
+
+    public void AddRegistryEdits() {
+        string keyRoot = "";
+        string subKey = "";
+        string position = "top";
+        if (forAllUsers == true) {
+            keyRoot = "HKEY_CLASSES_ROOT";
+            subKey = "Directory";
+        }
+        else if (forAllUsers == false) {
+            keyRoot = "HKEY_CURRENT_USER";
+            subKey = "Software\\Classes\\Directory";
+        }
+        string backgroundKey = keyRoot + "\\" + subKey + "\\Background\\shell\\";
+        string iconKey = keyRoot + "\\" + subKey + "\\shell\\";
+
+        Registry.SetValue(backgroundKey + "\\Defolderize\\command", "", installPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
+        Registry.SetValue(backgroundKey + "\\Defolderize", "position", position);
+        Registry.SetValue(iconKey + "\\Defolderize\\command", "", installPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
+        Registry.SetValue(iconKey + "\\Defolderize", "position", position);
+
+        Registry.SetValue(backgroundKey + "\\Unfold\\command", "", installPath + "\\defolderizer.exe \"%V\" \"unfold\"");
+        Registry.SetValue(backgroundKey + "\\Unfold", "position", position);
+        Registry.SetValue(iconKey + "\\Unfold\\command", "", installPath + "\\defolderizer.exe \"%V\" \"unfold\"");
+        Registry.SetValue(iconKey + "\\Unfold", "position", position);
+            
+        Registry.SetValue(backgroundKey + "\\Defolderize Recursive\\command", "", installPath + "\\defolderizer.exe \"%V\" \"recursive\"");
+        Registry.SetValue(backgroundKey + "\\Defolderize Recursive", "position", position);
+        Registry.SetValue(iconKey + "\\Defolderize Recursive\\command", "", installPath + "\\defolderizer.exe \"%V\" \"recursive\"");
+        Registry.SetValue(iconKey + "\\Defolderize Recursive", "position", position);
+    }
+
+}

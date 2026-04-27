@@ -265,7 +265,7 @@ public class Defolderizer {
     }
 
 
-    public string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
+    private string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
         Console.WriteLine(logger.WriteLogEntry("Finding new name..."));
 
         string newDirectoryPath = Path.Combine(parentDirectory.FullName, directory.Name);

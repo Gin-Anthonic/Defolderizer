@@ -1,7 +1,7 @@
-- [ ] better layout
-- [ ] decide context menu position
-	- [ ] option?
+- [x] better layout
+- [x] decide context menu position
+	- [x] option?
 - [ ] exception handeling better
 	- [ ] if already installed
 	- [ ] Seperately adding regedits
-- [ ] 
+- [ ] organize the install and ui logic
