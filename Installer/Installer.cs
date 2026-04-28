@@ -1,11 +1,11 @@
 ﻿using System.IO;
+using System.Printing;
 using System.Windows;
 
 namespace Defolderizer_Installer;
 
 public enum InstallCheckResult { 
     OK,
-    FilesExist,
     FolderNotEmpty,
     NotWriteable
 }
@@ -19,7 +19,7 @@ public class Installer {
     private MainWindow mainWindow;
     private RegistryService registryService;
 
-    private string[] InstallFiles = [
+    private readonly string[] installFiles = [
         "defolderizer.exe",
         "config.ini"
         ];
@@ -82,15 +82,40 @@ public class Installer {
         }
     }
 
-
+    //kinda yucky but works for now
     public InstallCheckResult CheckInstallValidity() {
+        MessageBox.Show(installPath);
+        string pathToTry = installPath;
 
+        if (Directory.Exists(installPath)) {
+            if (Directory.EnumerateFileSystemEntries(installPath).Count() != 0) {
+                return InstallCheckResult.FolderNotEmpty;
+            }
+            pathToTry = Path.Combine(installPath, "test");
+        }
+        try {
+            Directory.CreateDirectory(pathToTry);
+            MessageBox.Show("Created");
+            Directory.Delete(pathToTry, true);
+        }
+        catch {
+            return InstallCheckResult.NotWriteable;
+        }
         return InstallCheckResult.OK;
+    }
+
+    
+    public bool InstallExists() {
+        foreach (string fileName in installFiles) {
+            if (File.Exists(Path.Combine(installPath, fileName)) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
     public void AddRegEdits() {
-        mainWindow.Print("Adding regedits. Forallusers: " + forAllUsers);
         registryService.AddRegistryEdits(forAllUsers, installPath, menuPosition);
     }
 

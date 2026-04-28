@@ -11,7 +11,7 @@
 - [ ] link buttons enabled to existing regedits
 
 - [X] add check for regkeys existing
-- [ ] add check for already installed
+- [X] add check for already installed
 - [ ] cleanup after failed install ?
 - [ ] install logs
 

@@ -77,6 +77,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallForAllUsers = true;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         Output = "Initialized!\n";
         Print("All Users: " + registryService.HKLMKeysExist());
         Print("Current User: " + registryService.HKCUKeysExist());
@@ -86,6 +87,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     private void tbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
 
         btnInstall.IsEnabled = IsInstallPathValid(tbInstallPath.Text);
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
+        InstallCheckResult result = installer.CheckInstallValidity();
+        MessageBox.Show(result.ToString());
+        MessageBox.Show(installer.InstallExists().ToString());
     }
 
     public bool IsInstallPathValid(string path) {
