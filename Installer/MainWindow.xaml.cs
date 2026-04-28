@@ -6,7 +6,6 @@ using System.Windows;
 
 namespace Defolderizer_Installer;
 
-
 public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private string installPath = "";
@@ -60,11 +59,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly Installer installer;
     private readonly RegistryService registryService;
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly string[] menuPositions = ["Bottom","Top",""];
 
@@ -73,24 +71,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InitializeComponent();
         registryService = new RegistryService();
         installer = new Installer(this, registryService);
+
         InstallPath = "C:\\Program Files\\Defolderizer";
         InstallForAllUsers = true;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
+
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         Output = "Initialized!\n";
-        Print("All Users: " + registryService.HKLMKeysExist());
-        Print("Current User: " + registryService.HKCUKeysExist());
     }
 
 
-    private void tbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
-
-        btnInstall.IsEnabled = IsInstallPathValid(tbInstallPath.Text);
+    private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
+        BtnInstall.IsEnabled = IsInstallPathValid(TbInstallPath.Text);
+        MessageBox.Show(InstallPath);
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
-        InstallCheckResult result = installer.CheckInstallValidity();
-        MessageBox.Show(result.ToString());
-        MessageBox.Show(installer.InstallExists().ToString());
+
     }
 
     public bool IsInstallPathValid(string path) {
@@ -98,26 +94,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         return System.IO.Path.IsPathFullyQualified(path) && !badChars.IsMatch(path);
     }
 
-    private void btnBrowse_Click(object sender, RoutedEventArgs e) {
+    private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
         OpenFolderDialog dialog = new OpenFolderDialog();
         dialog.InitialDirectory = "C:\\Program Files";
         bool? dialogResult = dialog.ShowDialog();
         if (dialogResult == true) {
             InstallPath = dialog.FolderName + "\\Defolderizer";
         }
-
     }
 
-    private void btnInstall_Click(object sender, RoutedEventArgs e) {
+    private void BtnInstall_Click(object sender, RoutedEventArgs e) {
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         installer.Install();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e) {
+    private void BtnRemoveRegistryEdits_Click(object sender, RoutedEventArgs e) {
         registryService.RemoveRegistryEdits(InstallForAllUsers);
     }
 
-    private void Button_Click_1(object sender, RoutedEventArgs e) {
+    private void BtnAddRegistryEdits_Click(object sender, RoutedEventArgs e) {
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         installer.AddRegEdits();
     }
