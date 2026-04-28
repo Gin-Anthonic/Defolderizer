@@ -84,7 +84,6 @@ public class Installer {
 
     //kinda yucky but works for now
     public InstallCheckResult CheckInstallValidity() {
-        MessageBox.Show(installPath);
         string pathToTry = installPath;
 
         if (Directory.Exists(installPath)) {

@@ -1,8 +1,10 @@
 ﻿
 using Microsoft.Win32;
 using System.ComponentModel;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Defolderizer_Installer;
 
@@ -76,23 +78,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallForAllUsers = true;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
-
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         Output = "Initialized!\n";
     }
 
 
     private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
+        var binding = TbInstallPath.GetBindingExpression(TextBox.TextProperty); //force the DataBinding to Update
+        binding?.UpdateSource();
+
         BtnInstall.IsEnabled = IsInstallPathValid(TbInstallPath.Text);
         MessageBox.Show(InstallPath);
+        
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
 
     }
 
-    public bool IsInstallPathValid(string path) {
-        Regex badChars = new Regex(".*([<>\"|?*]|:[^\\\\]).*"); //good enough for now bruv
-        return System.IO.Path.IsPathFullyQualified(path) && !badChars.IsMatch(path);
-    }
 
     private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
         OpenFolderDialog dialog = new OpenFolderDialog();
@@ -118,6 +119,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
 
+
     public void Print(string text) {
         Output += text + "\n";
     }
@@ -130,6 +132,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private void UpdateForAllUsers() {
         InstallForAllUsers = AddToRightClick;
+    }
+
+
+    public bool IsInstallPathValid(string path) {
+        Regex badChars = new Regex(".*([<>\"|?*]|:[^\\\\]).*"); //good enough for now bruv
+        return System.IO.Path.IsPathFullyQualified(path) && !badChars.IsMatch(path);
+    }
+
+
+    private bool HasAdminPrivileges() {
+        bool isElevated;
+        using (WindowsIdentity identity = WindowsIdentity.GetCurrent()) {
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+        return isElevated;
     }
 
 }

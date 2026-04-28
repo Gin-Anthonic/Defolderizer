@@ -5,10 +5,12 @@
 
 - [X] bind position combobox
 - [X] auto disable for all users ?
-- [ ] cleanup codebehind
-- [ ] feedback on if installation possible or regedits exist
+- [X] cleanup codebehind
+- [X] check if admin priv
+- [ ] feedback on if installation possible or regedits exist and if admin priv
 - [ ] better layout for regedit buttons
 - [ ] link buttons enabled to existing regedits
+- [ ] scrollable output
 
 - [X] add check for regkeys existing
 - [X] add check for already installed
@@ -18,3 +20,4 @@
 ### Improvement Ideas:
 - [ ] more centralized regedits, with records maybe?
 - [ ] grouping menu entries
+- [ ] enter to update install path text
