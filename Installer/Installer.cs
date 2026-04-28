@@ -59,7 +59,7 @@ public class Installer {
 
         if (addToRightClick == true) {
             try {
-                registryService.AddRegistryEdits(forAllUsers, installPath);
+                registryService.AddRegistryEdits(forAllUsers, installPath,menuPosition);
             }
             catch (Exception e) {
                 MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);

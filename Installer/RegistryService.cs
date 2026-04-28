@@ -5,47 +5,31 @@ namespace Defolderizer_Installer;
 
 public class RegistryService {
 
-    private readonly string[] iconKeyPaths = [
-        "Software\\Classes\\Directory\\shell\\Defolderize",
-        "Software\\Classes\\Directory\\shell\\Unfold",
-        "Software\\Classes\\Directory\\shell\\Defolderize Recursive"
-    ];
+    private readonly Dictionary<string,string> RegistryEdits = new Dictionary<string, string>() {
 
-    private readonly string[] backgroundKeyPaths = [
-        "Software\\Classes\\Directory\\Background\\shell\\Defolderize",
-        "Software\\Classes\\Directory\\Background\\shell\\Unfold",
-        "Software\\Classes\\Directory\\Background\\shell\\Defolderize Recursive"
-    ];
+        {"Software\\Classes\\Directory\\shell\\Defolderize",                        "defolderize" },
+        {"Software\\Classes\\Directory\\shell\\Unfold",                             "unfold" },
+        {"Software\\Classes\\Directory\\shell\\Defolderize Recursive",              "recursive" },
 
-    public void AddRegistryEdits(bool? forAllUsers, string installPath, string position = "top") {
+        {"Software\\Classes\\Directory\\Background\\shell\\Defolderize",            "defolderize" },
+        {"Software\\Classes\\Directory\\Background\\shell\\Unfold",                 "unfold" },
+        {"Software\\Classes\\Directory\\Background\\shell\\Defolderize Recursive",  "recursive" },
+    };
+
+
+    public void AddRegistryEdits(bool? forAllUsers, string installPath, string position) {
         string keyRoot = "";
-        string subKey = "";
         if (forAllUsers == true) {
-            keyRoot = "HKEY_LOCAL_MACHINE";
-            subKey = "Software\\Classes\\Directory";
+            keyRoot = "HKEY_LOCAL_MACHINE\\";
         }
         else if (forAllUsers == false) {
-            keyRoot = "HKEY_CURRENT_USER";
-            subKey = "Software\\Classes\\Directory";
+            keyRoot = "HKEY_CURRENT_USER\\";
         }
-        MessageBox.Show("Adding Regedits at: " + keyRoot);
-        string backgroundKey = keyRoot + "\\" + subKey + "\\Background\\shell\\";
-        string iconKey = keyRoot + "\\" + subKey + "\\shell\\";
-
-        Registry.SetValue(backgroundKey + "\\Defolderize\\command", "", installPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
-        Registry.SetValue(backgroundKey + "\\Defolderize", "position", position);
-        Registry.SetValue(iconKey + "\\Defolderize\\command", "", installPath + "\\defolderizer.exe \"%V\" \"defolderize\"");
-        Registry.SetValue(iconKey + "\\Defolderize", "position", position);
-
-        Registry.SetValue(backgroundKey + "\\Unfold\\command", "", installPath + "\\defolderizer.exe \"%V\" \"unfold\"");
-        Registry.SetValue(backgroundKey + "\\Unfold", "position", position);
-        Registry.SetValue(iconKey + "\\Unfold\\command", "", installPath + "\\defolderizer.exe \"%V\" \"unfold\"");
-        Registry.SetValue(iconKey + "\\Unfold", "position", position);
-
-        Registry.SetValue(backgroundKey + "\\Defolderize Recursive\\command", "", installPath + "\\defolderizer.exe \"%V\" \"recursive\"");
-        Registry.SetValue(backgroundKey + "\\Defolderize Recursive", "position", position);
-        Registry.SetValue(iconKey + "\\Defolderize Recursive\\command", "", installPath + "\\defolderizer.exe \"%V\" \"recursive\"");
-        Registry.SetValue(iconKey + "\\Defolderize Recursive", "position", position);
+        MessageBox.Show("Adding Regedits at: " + position);
+        foreach (KeyValuePair<string, string> registryEdit in RegistryEdits) {
+            Registry.SetValue(keyRoot + registryEdit.Key + "\\command", "", $"""{installPath}\defolderizer.exe "%V" "{registryEdit.Value}" """);
+            Registry.SetValue(keyRoot + registryEdit.Key, "position", position);
+        }
     }
 
 
@@ -58,13 +42,10 @@ public class RegistryService {
             key = Registry.CurrentUser;
         }
 
-        foreach (string path in iconKeyPaths) {
+        foreach (string path in RegistryEdits.Keys) {
             key.DeleteSubKeyTree(path);
-        }
-        foreach (string path in backgroundKeyPaths) {
-            key.DeleteSubKeyTree(path);
-        }
 
+        }
     }
 
 
@@ -72,28 +53,20 @@ public class RegistryService {
         bool result = true;
         RegistryKey? key;
 
-        foreach (string path in iconKeyPaths) {
+        foreach (string path in RegistryEdits.Keys) {
             key = Registry.LocalMachine.OpenSubKey(path);
             if (key == null) result = false;
         }
 
-        foreach (string path in backgroundKeyPaths) {
-            key = Registry.LocalMachine.OpenSubKey(path);
-            if (key == null) result = false;
-        }
         return result;
     }
+
 
     public bool HKCUKeysExist() {
         bool result = true;
         RegistryKey? key;
 
-        foreach (string path in iconKeyPaths) {
-            key = Registry.CurrentUser.OpenSubKey(path);
-            if (key == null) result = false;
-        }
-
-        foreach (string path in backgroundKeyPaths) {
+        foreach (string path in RegistryEdits.Keys) {
             key = Registry.CurrentUser.OpenSubKey(path);
             if (key == null) result = false;
         }

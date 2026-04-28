@@ -10,7 +10,7 @@
 - [ ] link buttons enabled to existing regedits
 - [ ] cleanup codebehind
 
-- [ ] add check for regkeys existing
+- [X] add check for regkeys existing
 - [ ] add check for already installed
 - [ ] cleanup after failed install ?
 - [ ] install logs

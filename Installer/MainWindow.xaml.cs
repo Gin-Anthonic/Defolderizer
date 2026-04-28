@@ -70,6 +70,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private readonly string menuPosition = "";
 
     public MainWindow() {
         DataContext = this;
@@ -107,7 +108,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void btnInstall_Click(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, "top");
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPosition);
         installer.Install();
     }
 
@@ -116,7 +117,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void Button_Click_1(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, "top");
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, "");
         installer.AddRegEdits();
     }
 
