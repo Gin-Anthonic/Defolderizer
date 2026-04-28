@@ -19,7 +19,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
-
     private bool? installForAllUsers;
 
     public bool? InstallForAllUsers {
@@ -30,7 +29,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
-
     private bool? addToRightClick;
 
     public bool? AddToRightClick {
@@ -38,21 +36,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             addToRightClick = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddToRightClick"));
+            UpdateForAllUsers();
         }
     }
 
+    private int selectedMenuPositionIndex;
 
-    private string position = "";
-
-    public string Position {
-        get { return position; }
-        set {
-            position = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Position"));
+    public int SelectedMenuPositionIndex {
+        get { return selectedMenuPositionIndex; }
+        set { 
+            selectedMenuPositionIndex = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedMenuPositionIndex"));
         }
     }
-
-
 
     private string output = "";
 
@@ -70,7 +66,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private readonly string menuPosition = "";
+    private readonly string[] menuPositions = ["Bottom","Top",""];
 
     public MainWindow() {
         DataContext = this;
@@ -80,7 +76,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallPath = "C:\\Program Files\\Defolderizer";
         InstallForAllUsers = true;
         AddToRightClick = true;
-
+        SelectedMenuPositionIndex = 1;
         Output = "Initialized!\n";
         Print("All Users: " + registryService.HKLMKeysExist());
         Print("Current User: " + registryService.HKCUKeysExist());
@@ -108,7 +104,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void btnInstall_Click(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPosition);
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         installer.Install();
     }
 
@@ -117,7 +113,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void Button_Click_1(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, "");
+        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         installer.AddRegEdits();
     }
 
@@ -129,6 +125,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public void ClearOutput() {
         Output = "";
+    }
+
+
+    private void UpdateForAllUsers() {
+        InstallForAllUsers = AddToRightClick;
     }
 
 }

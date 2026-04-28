@@ -72,7 +72,7 @@
                    Content="Position:" />
             <ComboBox Name="cmbPosition"
                       Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" 
-                      Width="110" SelectedIndex="0"
+                      Width="110" SelectedIndex="{Binding SelectedMenuPositionIndex}"
                       ToolTip="Where the options in the Menu will appear&#x0a;System Default: Let Windows decide where the options appear"
                       
                       >

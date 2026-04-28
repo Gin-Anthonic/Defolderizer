@@ -3,6 +3,13 @@ using System.Windows;
 
 namespace Defolderizer_Installer;
 
+public enum InstallCheckResult { 
+    OK,
+    FilesExist,
+    FolderNotEmpty,
+    NotWriteable
+}
+
 public class Installer {
 
     private string installPath = "";
@@ -11,6 +18,11 @@ public class Installer {
     private string menuPosition = "";
     private MainWindow mainWindow;
     private RegistryService registryService;
+
+    private string[] InstallFiles = [
+        "defolderizer.exe",
+        "config.ini"
+        ];
 
     public Installer(MainWindow mainWindow, RegistryService registryService) {
         this.mainWindow = mainWindow;
@@ -68,6 +80,12 @@ public class Installer {
             }
             mainWindow.Print("Registry Edits Successful!");
         }
+    }
+
+
+    public InstallCheckResult CheckInstallValidity() {
+
+        return InstallCheckResult.OK;
     }
 
 
