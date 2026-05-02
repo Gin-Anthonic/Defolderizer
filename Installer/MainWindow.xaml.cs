@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Win32;
 using System.ComponentModel;
+using System.IO;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -73,11 +74,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InitializeComponent();
         registryService = new RegistryService();
         installer = new Installer(this, registryService);
-
-        InstallPath = "C:\\Program Files\\Defolderizer";
-        InstallForAllUsers = true;
+     
+        string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        InstallPath = Path.Combine(localAppData, "programs", "Defolderizer");
+        InstallForAllUsers = false;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
+        
+        if (HasAdminPrivileges()) {
+            InstallPath = "C:\\Program Files\\Defolderizer";
+            InstallForAllUsers = true;
+        }
         installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
         Output = "Initialized!\n";
     }
@@ -131,7 +138,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
 
     private void UpdateForAllUsers() {
-        InstallForAllUsers = AddToRightClick;
+        if (addToRightClick == false) { 
+            InstallForAllUsers = AddToRightClick; 
+        }
     }
 
 
