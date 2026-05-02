@@ -115,7 +115,15 @@ public class Installer {
 
 
     public void AddRegEdits() {
-        registryService.AddRegistryEdits(forAllUsers, installPath, menuPosition);
+        try {
+            registryService.AddRegistryEdits(forAllUsers, installPath, menuPosition);
+        }
+        catch (Exception e) {
+            MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
+            return;
+        }
+        mainWindow.Print("Registry Edits Successful!");
     }
 
 
