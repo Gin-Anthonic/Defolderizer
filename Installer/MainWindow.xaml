@@ -9,15 +9,27 @@
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="80" />
             <RowDefinition Height="10" />
             <RowDefinition Height="60" />
             <RowDefinition/>
         </Grid.RowDefinitions>
-
+        
         <Rectangle Grid.Row="1" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
         <Rectangle Grid.Row="3" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
+        
+        <Rectangle Grid.Row="1" Fill="White" 
+                   Height="15" Width="122" Margin="18,0,0,0"
+                   HorizontalAlignment="Left"/>
+        
+        <CheckBox Name="CbAddToRightClick" 
+          Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left"
+          Margin="20,0,0,0" 
+          Content="Add to Right-Click"
+          ToolTip="Add to Right Click Menu on Directories"
+          IsChecked="{Binding AddToRightClick}" 
+      />
 
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
@@ -60,13 +72,7 @@
                       IsChecked="{Binding InstallForAllUsers}"
                       IsEnabled="{Binding AddToRightClick}"
                       />
-            <CheckBox Name="CbAddToRightClick" 
-                      Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right"
-                      Width="120"
-                      Content="Add to Right-Click"
-                      ToolTip="Add to Right Click Menu on Directories"
-                      IsChecked="{Binding AddToRightClick}" 
-                  />
+            
 
             <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"
                    Content="Position:" />

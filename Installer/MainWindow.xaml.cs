@@ -64,7 +64,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private readonly Installer installer;
+    private readonly InstallerService installerService;
     private readonly RegistryService registryService;
 
     private readonly string[] menuPositions = ["Bottom","Top",""];
@@ -73,31 +73,41 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         DataContext = this;
         InitializeComponent();
         registryService = new RegistryService();
-        installer = new Installer(this, registryService);
+        installerService = new InstallerService(this, registryService);
      
-        string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        InstallPath = Path.Combine(localAppData, "programs", "Defolderizer");
-        InstallForAllUsers = false;
-        AddToRightClick = true;
-        SelectedMenuPositionIndex = 1;
-        
         if (HasAdminPrivileges()) {
-            InstallPath = "C:\\Program Files\\Defolderizer";
-            InstallForAllUsers = true;
+            SetDefaultAdminSettings();
         }
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
+        else {
+            SetDefaultUserSettings();
+        }
+
+        installerService.UpdateSettings();
         Output = "Initialized!\n";
     }
 
+
+    private void SetDefaultAdminSettings() {
+        InstallPath = InstallerService.DefaultInstallPath;
+        InstallForAllUsers = true;
+        AddToRightClick = true;
+        SelectedMenuPositionIndex = 1;
+    }
+
+    private void SetDefaultUserSettings() {
+        InstallPath = InstallerService.GetDefaultUserInstallPath();
+        InstallForAllUsers = false;
+        AddToRightClick = true;
+        SelectedMenuPositionIndex = 1;
+    }
 
     private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
         var binding = TbInstallPath.GetBindingExpression(TextBox.TextProperty); //force the DataBinding to Update
         binding?.UpdateSource();
 
         BtnInstall.IsEnabled = IsInstallPathValid(TbInstallPath.Text);
-        MessageBox.Show(InstallPath);
         
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
+        installerService.UpdateSettings();
 
     }
 
@@ -112,8 +122,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void BtnInstall_Click(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
-        installer.Install();
+        installerService.UpdateSettings();
+        installerService.Install();
     }
 
     private void BtnRemoveRegistryEdits_Click(object sender, RoutedEventArgs e) {
@@ -121,8 +131,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void BtnAddRegistryEdits_Click(object sender, RoutedEventArgs e) {
-        installer.SetSettings(InstallPath, AddToRightClick, InstallForAllUsers, menuPositions[SelectedMenuPositionIndex]);
-        installer.AddRegEdits();
+        installerService.UpdateSettings();
+        installerService.AddRegEdits();
     }
 
 

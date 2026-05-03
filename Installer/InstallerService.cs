@@ -10,7 +10,7 @@ public enum InstallCheckResult {
     NotWriteable
 }
 
-public class Installer {
+public class InstallerService {
 
     private string installPath = "";
     private bool? addToRightClick;
@@ -18,23 +18,24 @@ public class Installer {
     private string menuPosition = "";
     private MainWindow mainWindow;
     private RegistryService registryService;
+    private readonly string[] menuPositions = ["Bottom", "Top", ""];
 
     private readonly string[] installFiles = [
         "defolderizer.exe",
         "config.ini"
         ];
 
-    public Installer(MainWindow mainWindow, RegistryService registryService) {
+    public InstallerService(MainWindow mainWindow, RegistryService registryService) {
         this.mainWindow = mainWindow;
         this.registryService = registryService;
     }
 
 
-    public void SetSettings(string installPath, bool? addToRightClick, bool? forAllUsers, string menuPosition) {
-        this.installPath = installPath;
-        this.addToRightClick = addToRightClick;
-        this.forAllUsers = forAllUsers;
-        this.menuPosition = menuPosition;
+    public void UpdateSettings() {
+        installPath = mainWindow.InstallPath;
+        addToRightClick = mainWindow.AddToRightClick;
+        forAllUsers = mainWindow.InstallForAllUsers;
+        menuPosition = menuPositions[mainWindow.SelectedMenuPositionIndex];
     }
 
 
@@ -134,5 +135,12 @@ public class Installer {
         configFile.CopyTo(Path.Combine(installPath, configFile.Name));
     }
 
+
+    public static string DefaultInstallPath = "C:\\Program Files\\Defolderizer";
+
+    public static string GetDefaultUserInstallPath() {
+        string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        return Path.Combine(localAppData, "programs", "Defolderizer");
+    }
 
 }
