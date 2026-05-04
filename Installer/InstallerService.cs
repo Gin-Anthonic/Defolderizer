@@ -36,6 +36,7 @@ public class InstallerService {
         addToRightClick = mainWindow.AddToRightClick;
         forAllUsers = mainWindow.InstallForAllUsers;
         menuPosition = menuPositions[mainWindow.SelectedMenuPositionIndex];
+       // mainWindow.Print(installPath + "\n" + addToRightClick.ToString() + forAllUsers.ToString() + menuPosition);
     }
 
 

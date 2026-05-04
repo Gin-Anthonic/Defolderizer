@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace Defolderizer_Installer;
 
@@ -28,8 +29,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             installForAllUsers = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForAllUsers"));
+           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForCurrentUser"));
         }
     }
+
+
+    public bool? InstallForCurrentUser {
+        get { return !installForAllUsers; }
+        set {
+            InstallForAllUsers = !value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForCurrentUsers"));
+        }
+    }
+
 
     private bool? addToRightClick;
 
@@ -83,7 +95,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
 
         installerService.UpdateSettings();
-        Output = "Initialized!\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\n";
+        Output = "Initialized!\n";
     }
 
 
@@ -135,6 +147,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         installerService.AddRegEdits();
     }
 
+    private void BtnRemoveForThisPC_Click(object sender, RoutedEventArgs e) {
+        registryService.RemoveRegistryEdits(true);
+    }
+
+    private void BtnRemoveForUser_Click(object sender, RoutedEventArgs e) {
+        registryService.RemoveRegistryEdits(false);
+    }
+
+    private void BtnUpdateMenu_Click(object sender, RoutedEventArgs e) {
+        Print("i did not implement that yet.. sorry dawg");
+    }
 
 
     public void Print(string text) {
