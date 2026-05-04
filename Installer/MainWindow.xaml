@@ -39,13 +39,13 @@
 
 
         <RadioButton Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
-                     Content="Install for the current user"
+                     Content="Install for the current user" 
                      IsChecked="{Binding InstallForCurrentUser}"/>
 
 
         <RadioButton Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
-                     Content="Install for all users on this PC"
-                     IsChecked="{Binding InstallForAllUsers}"/>
+                     Content="Install for all users on this PC" Name="CbInstalForAllUsers"
+                     IsChecked="{Binding InstallForAllUsers}" IsEnabled="{Binding HasAdminPrivileges}"/>
 
         <Button Name="BtnInstall" Content="Install" Grid.Row="3"
         HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"
@@ -98,9 +98,11 @@
                     <Label Content="Clear Context-Menu:"  FontSize="12" HorizontalAlignment="Center" />
                     <StackPanel Orientation="Horizontal">
                         <Button Content="This PC" Name="BtnRemoveForThisPC"
-                            Margin="2" Width="60" Click="BtnRemoveForThisPC_Click"/> 
+                                Margin="2" Width="60" 
+                                Click="BtnRemoveForThisPC_Click" IsEnabled="{Binding HasAdminPrivileges}"/> 
                         <Button Content="This User" Name="BtnRemoveForUser"
-                            Margin="2" Width="60" Click="BtnRemoveForUser_Click"/>
+                                Margin="2" Width="60" 
+                                Click="BtnRemoveForUser_Click" />
                     </StackPanel>
                     <Separator Margin="4"/>
                     <Button Content="Manually Update&#x0a;Context-Menu" Name="BtnUpdateMenu"

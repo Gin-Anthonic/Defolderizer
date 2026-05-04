@@ -6,7 +6,7 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+ 
 
 namespace Defolderizer_Installer;
 
@@ -74,6 +74,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
+    private bool hasAdminPrivileges;
+
+    public bool HasAdminPrivileges {
+        get { return hasAdminPrivileges; }
+        set {
+            hasAdminPrivileges = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HasAdminPrivileges"));
+        }
+    }
+
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly InstallerService installerService;
@@ -86,8 +97,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InitializeComponent();
         registryService = new RegistryService();
         installerService = new InstallerService(this, registryService);
+
+        HasAdminPrivileges = CheckAdminPrivileges();
      
-        if (HasAdminPrivileges()) {
+        if (hasAdminPrivileges) {
             SetDefaultAdminSettings();
         }
         else {
@@ -104,6 +117,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallForAllUsers = true;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
+        
     }
 
     private void SetDefaultUserSettings() {
@@ -111,6 +125,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallForAllUsers = false;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
+        CbInstalForAllUsers.IsEnabled = false;
+        BtnRemoveForThisPC.IsEnabled = false;
     }
 
     private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
@@ -122,7 +138,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         installerService.UpdateSettings();
 
     }
-
 
     private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
         OpenFolderDialog dialog = new OpenFolderDialog();
@@ -156,7 +171,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void BtnUpdateMenu_Click(object sender, RoutedEventArgs e) {
-        Print("i did not implement that yet.. sorry dawg");
+        registryService.AddRegistryEdits(InstallForAllUsers, InstallPath, menuPositions[selectedMenuPositionIndex]);
     }
 
 
@@ -183,7 +198,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
 
-    private bool HasAdminPrivileges() {
+    private bool CheckAdminPrivileges() {
         bool isElevated;
         using (WindowsIdentity identity = WindowsIdentity.GetCurrent()) {
             WindowsPrincipal principal = new WindowsPrincipal(identity);

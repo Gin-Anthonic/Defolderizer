@@ -7,9 +7,11 @@
 - [X] auto disable for all users ?
 - [X] cleanup codebehind
 - [X] check if admin priv
-- [ ] rework layout
+- [X] rework layout
+- [ ] add installpath validity feedback
+- [ ] disable installbutton when install impossible
 
-- [ ] scrollable output
+- [X] scrollable output
 
 - [X] add check for regkeys existing
 - [X] add check for already installed
