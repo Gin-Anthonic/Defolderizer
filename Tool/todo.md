@@ -12,6 +12,7 @@
 - [x] service centric approach
 - [x] optimize logging#
 - [X] records instead of class
+- [X] seperate code classes
 
 
 - [ ] installer

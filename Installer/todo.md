@@ -7,15 +7,13 @@
 - [X] auto disable for all users ?
 - [X] cleanup codebehind
 - [X] check if admin priv
-- [ ] add feedback label on install path textbock 
-- [ ] feedback on if installation possible or regedits exist and if admin priv
-- [ ] better layout for regedit buttons
-- [ ] link buttons enabled to existing regedits
+- [ ] rework layout
+
 - [ ] scrollable output
 
 - [X] add check for regkeys existing
 - [X] add check for already installed
-- [ ] catch regedit crash
+- [X] catch regedit crash
 - [ ] cleanup after failed install ?
 - [ ] install logs
 
