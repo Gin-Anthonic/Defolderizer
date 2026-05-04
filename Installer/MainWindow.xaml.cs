@@ -83,7 +83,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
 
         installerService.UpdateSettings();
-        Output = "Initialized!\n";
+        Output = "Initialized!\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\nBaba is you\n";
     }
 
 

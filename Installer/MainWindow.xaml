@@ -5,106 +5,109 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Defolderizer_Installer"
         mc:Ignorable="d"
-        Title="Installer" Height="400" Width="450" MinWidth="450" MinHeight="400">
+        Title="Installer" Height="520"  Width="520" MinWidth="520" MinHeight="520">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
+            <RowDefinition Height="20" />
             <RowDefinition Height="20"/>
-            <RowDefinition Height="80" />
-            <RowDefinition Height="10" />
-            <RowDefinition Height="60" />
-            <RowDefinition/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
-        
-        <Rectangle Grid.Row="1" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
-        <Rectangle Grid.Row="3" HorizontalAlignment="Stretch" Fill="Gray" Height="1"/>
-        
-        <Rectangle Grid.Row="1" Fill="White" 
-                   Height="15" Width="122" Margin="18,0,0,0"
-                   HorizontalAlignment="Left"/>
-        
-        <CheckBox Name="CbAddToRightClick" 
-          Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left"
-          Margin="20,0,0,0" 
-          Content="Add to Right-Click"
-          ToolTip="Add to Right Click Menu on Directories"
-          IsChecked="{Binding AddToRightClick}" 
-      />
 
-        <Grid Grid.Row="0" >
+        <Grid Grid.Row="0" VerticalAlignment="Bottom" Margin="0,0,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20*" />
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="360" />
                 <ColumnDefinition Width="20*" />
             </Grid.ColumnDefinitions>
-            
+
             <Label Content="Install Path:" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <TextBox Name="TbInstallPath"   Grid.Column="1"
-                     VerticalAlignment="Center" HorizontalAlignment="Center"
-                     Width="280"
-                     LostFocus="TbInstallPath_LostFocus" 
-                     Text="{Binding InstallPath}"
-                 />
+             VerticalAlignment="Center" HorizontalAlignment="Center"
+             Width="340"
+             LostFocus="TbInstallPath_LostFocus" 
+             Text="{Binding InstallPath}"
+         />
             <Button Name="BtnBrowse" Content="Browse" 
-                    Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"
-                    Width="44" 
-                    Click="BtnBrowse_Click"
-                />
-        </Grid>
-        
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="195"/>
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-
-
-            <CheckBox Name="CbInstallForAllUsers" 
-                      Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right"
-                      Width="100"
-                      Content="For all Users" 
-                      ToolTip="Add  for all users on this PC" 
-                      IsChecked="{Binding InstallForAllUsers}"
-                      IsEnabled="{Binding AddToRightClick}"
-                      />
-            
-
-            <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="110"
-                   Content="Position:" />
-            <ComboBox Name="CmbPosition"
-                      Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Center" 
-                      Width="110" SelectedIndex="{Binding SelectedMenuPositionIndex}"
-                      ToolTip="Where the options in the Menu will appear&#x0a;System Default: Let Windows decide where the options appear"
-                      
-                      >
-                <ComboBoxItem Content="Bottom" />
-                <ComboBoxItem Content="Top" />
-                <ComboBoxItem Content="System Default" />
-
-            </ComboBox>
-            <Button Content="Add Menu Items" Name="BtnAddRegistryEdits"
-                    Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                    Click="BtnAddRegistryEdits_Click"/>           
-            <Button Content="Remove Menu Items" Name="BtnRemoveRegistryEdits"
-                    Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                    Click="BtnRemoveRegistryEdits_Click"/>
+            Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0"
+            Width="44" 
+            Click="BtnBrowse_Click"
+        />
         </Grid>
 
-        <Button Name="BtnInstall" Content="Install" Grid.Row="4"
-                HorizontalAlignment="Center" VerticalAlignment="Center" 
-                Width="200" Height="40"
-                Click="BtnInstall_Click"
-                />
-        <TextBlock Name="TblOutput" Grid.Row="5"
-                   TextWrapping="Wrap"
-                   VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10"
-                   Height="Auto" Width="400"
-                   Text="{Binding Output}"
-                   />
+
+        <RadioButton Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
+                     Content="Install for the current user"/>
+
+
+        <RadioButton Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Width="180"
+                     Content="Install for all users on this PC"/>
+
+        <Button Name="BtnInstall" Content="Install" Grid.Row="3"
+        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"
+        Width="200" Height="40"
+        Click="BtnInstall_Click"
+        />
+
+        <TextBox Name="TblOutput" Grid.Row="4" Height="160" Width="480"
+           TextWrapping="Wrap" AcceptsReturn="True" Padding="5"
+           VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10"
+           IsReadOnly="True" VerticalScrollBarVisibility="Auto"
+           BorderBrush="LightGray" BorderThickness="1"      
+           Text="{Binding Output}"
+           />
+
+        <Rectangle Grid.Row="5" HorizontalAlignment="Stretch" Fill="Gray" Height="1" VerticalAlignment="Top" Margin="0,12,0,0" />
+        <Rectangle Grid.Row="5" Fill="White" Height="16" Width="128" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5"/>
+
+        <Expander Grid.Row="5" Header="Advanced Settings" Margin="6,0,0,0">
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <CheckBox Name="CbInstallForAllUsers" 
+                              Grid.Row="1" VerticalAlignment="Top" 
+                              Content="Add Context-Menu &#x0a;Items" 
+                              ToolTip="Add  for all users on this PC" 
+                              IsChecked="{Binding InstallForAllUsers}"
+                              IsEnabled="{Binding AddToRightClick}"
+                              />
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label  Width="110" Content="Position:" />
+                    <ComboBox  Name="CmbPosition"
+                               Width="110" SelectedIndex="{Binding SelectedMenuPositionIndex}"
+                               ToolTip="Where the options in the Menu will appear&#x0a;System Default: Let Windows decide where the options appear"
+                               >
+                        <ComboBoxItem Content="Bottom" />
+                        <ComboBoxItem Content="Top" />
+                        <ComboBoxItem Content="System Default" />
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                    <Label Content="Clear Context-Menu:"  FontSize="12" HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="This PC"
+                            Margin="2" Width="60"/>
+                        <Button Content="This User"
+                            Margin="2" Width="60"/>
+                    </StackPanel>
+                    <Separator Margin="4"/>
+                    <Button Content="Manually Update&#x0a;Context-Menu" Margin="2" FontSize="10"/>
+                </StackPanel>
+
+            </Grid>
+        </Expander>
+
     </Grid>
 </Window>

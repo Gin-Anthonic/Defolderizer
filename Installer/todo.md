@@ -14,7 +14,6 @@
 - [X] add check for regkeys existing
 - [X] add check for already installed
 - [X] catch regedit crash
-- [ ] cleanup after failed install ?
 - [ ] install logs
 
 ### Improvement Ideas:
