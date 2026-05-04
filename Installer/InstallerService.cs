@@ -129,14 +129,15 @@ public class InstallerService {
 
 
     private void CopyFiles() {
-        FileInfo applicationFile = new FileInfo("defolderizer.exe");
-        FileInfo configFile = new FileInfo("config.ini");
-        applicationFile.CopyTo(Path.Combine(installPath, applicationFile.Name));
-        configFile.CopyTo(Path.Combine(installPath, configFile.Name));
+        foreach (string fileName in installFiles) {
+            FileInfo currentFile = new FileInfo(fileName);
+            currentFile.CopyTo(Path.Combine(installPath,currentFile.Name));
+        }
     }
 
 
     public static string DefaultInstallPath = "C:\\Program Files\\Defolderizer";
+
 
     public static string GetDefaultUserInstallPath() {
         string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

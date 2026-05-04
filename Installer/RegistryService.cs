@@ -25,7 +25,6 @@ public class RegistryService {
         else if (forAllUsers == false) {
             keyRoot = "HKEY_CURRENT_USER\\";
         }
-        MessageBox.Show("Adding Regedits at: " + position);
         foreach (KeyValuePair<string, string> registryEdit in RegistryEdits) {
             Registry.SetValue(keyRoot + registryEdit.Key + "\\command", "", $"""{installPath}\defolderizer.exe "%V" "{registryEdit.Value}" """);
             Registry.SetValue(keyRoot + registryEdit.Key, "position", position);
@@ -43,6 +42,8 @@ public class RegistryService {
         }
 
         foreach (string path in RegistryEdits.Keys) {
+            if (key.OpenSubKey(path) == null)
+                continue;
             key.DeleteSubKeyTree(path);
 
         }
