@@ -1,13 +1,16 @@
 ﻿using System.IO;
 using System.Printing;
+using System.Text.RegularExpressions;
 using System.Windows;
+
 
 namespace Defolderizer_Installer;
 
 public enum InstallCheckResult { 
     OK,
     FolderNotEmpty,
-    NotWriteable
+    NotWriteable,
+    PathFaulty
 }
 
 public class InstallerService {
@@ -86,6 +89,11 @@ public class InstallerService {
 
     //kinda yucky but works for now
     public InstallCheckResult CheckInstallValidity() {
+        Regex badChars = new Regex(".*([<>\"|?*]|:[^\\\\]).*"); //good enough for now bruv
+        if (Path.IsPathFullyQualified(installPath) && !badChars.IsMatch(installPath) == false) {
+            return InstallCheckResult.PathFaulty;
+        }
+
         string pathToTry = installPath;
 
         if (Directory.Exists(installPath)) {
@@ -96,7 +104,6 @@ public class InstallerService {
         }
         try {
             Directory.CreateDirectory(pathToTry);
-            MessageBox.Show("Created");
             Directory.Delete(pathToTry, true);
         }
         catch {

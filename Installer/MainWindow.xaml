@@ -50,7 +50,7 @@
         <Button Name="BtnInstall" Content="Install" Grid.Row="3"
         HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"
         Width="200" Height="40"
-        Click="BtnInstall_Click"
+        Click="BtnInstall_Click" IsEnabled="{Binding InstallPossible}"
         />
 
         <TextBox Name="TblOutput" Grid.Row="4" Height="160" Width="480"

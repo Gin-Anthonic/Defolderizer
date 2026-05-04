@@ -6,7 +6,8 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
- 
+using System.Windows.Data;
+
 
 namespace Defolderizer_Installer;
 
@@ -19,6 +20,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             installPath = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPath"));
+            installerService.UpdateSettings();
+            installPathStatus = installerService.CheckInstallValidity();
+            InstallPossible = (installPathStatus == InstallCheckResult.OK);
         }
     }
 
@@ -84,6 +88,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
+    private bool installPossible;
+
+    public bool InstallPossible {
+        get { return installPossible; }
+        set { 
+            installPossible = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPossible"));
+        }
+    }
+
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -91,13 +106,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     private readonly RegistryService registryService;
 
     private readonly string[] menuPositions = ["Bottom","Top",""];
+    private InstallCheckResult installPathStatus;
 
     public MainWindow() {
         DataContext = this;
         InitializeComponent();
         registryService = new RegistryService();
         installerService = new InstallerService(this, registryService);
-
         HasAdminPrivileges = CheckAdminPrivileges();
      
         if (hasAdminPrivileges) {
@@ -106,6 +121,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         else {
             SetDefaultUserSettings();
         }
+        InstallPossible = true;
 
         installerService.UpdateSettings();
         Output = "Initialized!\n";
@@ -130,13 +146,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
-        var binding = TbInstallPath.GetBindingExpression(TextBox.TextProperty); //force the DataBinding to Update
+        BindingExpression binding = TbInstallPath.GetBindingExpression(TextBox.TextProperty); //force the DataBinding to Update
         binding?.UpdateSource();
-
-        BtnInstall.IsEnabled = IsInstallPathValid(TbInstallPath.Text);
-        
-        installerService.UpdateSettings();
-
     }
 
     private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
@@ -189,12 +200,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         if (addToRightClick == false) { 
             InstallForAllUsers = AddToRightClick; 
         }
-    }
-
-
-    public bool IsInstallPathValid(string path) {
-        Regex badChars = new Regex(".*([<>\"|?*]|:[^\\\\]).*"); //good enough for now bruv
-        return System.IO.Path.IsPathFullyQualified(path) && !badChars.IsMatch(path);
     }
 
 
