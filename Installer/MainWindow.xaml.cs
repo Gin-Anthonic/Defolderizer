@@ -23,6 +23,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
             installerService.UpdateSettings();
             installPathStatus = installerService.CheckInstallValidity();
             InstallPossible = (installPathStatus == InstallCheckResult.OK);
+            UpdateInstallPathStatusFeedback();
         }
     }
 
@@ -33,7 +34,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             installForAllUsers = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForAllUsers"));
-           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForCurrentUser"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallForCurrentUser"));
         }
     }
 
@@ -54,7 +55,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             addToRightClick = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AddToRightClick"));
-            UpdateForAllUsers();
         }
     }
 
@@ -98,6 +98,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
+    private string installPathStatusFeedback;
+
+    public string InstallPathStatusFeedback {
+        get { return installPathStatusFeedback; } 
+        set { 
+            installPathStatusFeedback = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPathStatusFeedback"));
+        }
+    }
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -122,7 +131,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
             SetDefaultUserSettings();
         }
         InstallPossible = true;
-
+        UpdateInstallPathStatusFeedback();
         installerService.UpdateSettings();
         Output = "Initialized!\n";
     }
@@ -143,6 +152,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         SelectedMenuPositionIndex = 1;
         CbInstalForAllUsers.IsEnabled = false;
         BtnRemoveForThisPC.IsEnabled = false;
+    }
+
+    private void UpdateInstallPathStatusFeedback() {
+        Dictionary<InstallCheckResult, string> statusMessages = new Dictionary<InstallCheckResult, string>() {
+            {InstallCheckResult.OK,             "" },
+            {InstallCheckResult.PathFaulty,     "Install Path is Vaulty" },
+            {InstallCheckResult.NotWriteable,   "The Directory is not Writable" },
+            {InstallCheckResult.FolderNotEmpty, "The Directory is not empty" }
+        };
+
+        InstallPathStatusFeedback = statusMessages[installPathStatus];
     }
 
     private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
@@ -193,13 +213,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public void ClearOutput() {
         Output = "";
-    }
-
-
-    private void UpdateForAllUsers() {
-        if (addToRightClick == false) { 
-            InstallForAllUsers = AddToRightClick; 
-        }
     }
 
 

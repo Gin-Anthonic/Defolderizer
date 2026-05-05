@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Defolderizer_Installer"
         mc:Ignorable="d"
-        Title="Installer" Height="520"  Width="520" MinWidth="520" MinHeight="520">
+        Title="Installer" Height="524"  Width="520" MinWidth="520" MinHeight="520">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="20" />
             <RowDefinition Height="20"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="64"/>
             <RowDefinition Height="200"/>
             <RowDefinition Height="120"/>
         </Grid.RowDefinitions>
@@ -47,12 +47,14 @@
                      Content="Install for all users on this PC" Name="CbInstalForAllUsers"
                      IsChecked="{Binding InstallForAllUsers}" IsEnabled="{Binding HasAdminPrivileges}"/>
 
-        <Button Name="BtnInstall" Content="Install" Grid.Row="3"
-        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5"
-        Width="200" Height="40"
-        Click="BtnInstall_Click" IsEnabled="{Binding InstallPossible}"
-        />
-
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Name="BtnInstall" Content="Install"  
+                    Width="200" Height="40"
+                    Click="BtnInstall_Click" IsEnabled="{Binding InstallPossible}"/>
+            <TextBlock Text="{Binding InstallPathStatusFeedback}" 
+                       TextAlignment="Center" FontSize="9"/>
+        </StackPanel>
+        
         <TextBox Name="TblOutput" Grid.Row="4" Height="160" Width="480"
            TextWrapping="Wrap" AcceptsReturn="True" Padding="5"
            VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10"
