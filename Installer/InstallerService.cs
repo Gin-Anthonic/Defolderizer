@@ -21,6 +21,7 @@ public class InstallerService {
     private string menuPosition = "";
     private MainWindow mainWindow;
     private RegistryService registryService;
+    private LoggingService loggingService = new LoggingService();
     private readonly string[] menuPositions = ["Bottom", "Top", ""];
 
     private readonly string[] installFiles = [
@@ -56,6 +57,7 @@ public class InstallerService {
         catch (Exception e) {
             MessageBox.Show("Failed to Create Directory at \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             mainWindow.Print("Failed to Create Directory at " + installPath + " due to the following error: \n" + e.Message);
+            loggingService.CreateInstallFailureLog(mainWindow.Output,e,mainWindow.HasAdminPrivileges,forAllUsers);
             return;
         }
 
@@ -68,6 +70,7 @@ public class InstallerService {
         catch (Exception e) {
             MessageBox.Show("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             mainWindow.Print("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message);
+            loggingService.CreateInstallFailureLog(mainWindow.Output, e, mainWindow.HasAdminPrivileges, forAllUsers);
             return;
         }
 
@@ -81,6 +84,7 @@ public class InstallerService {
             catch (Exception e) {
                 MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
+                loggingService.CreateInstallFailureLog(mainWindow.Output, e, mainWindow.HasAdminPrivileges, forAllUsers);
                 return;
             }
             mainWindow.Print("Registry Edits Successful!");

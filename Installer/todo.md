@@ -8,15 +8,15 @@
 - [X] cleanup codebehind
 - [X] check if admin priv
 - [X] rework layout
-- [ ] add installpath validity feedback
-- [ ] disable installbutton when install impossible
+- [X] add installpath validity feedback
+- [X] disable installbutton when install impossible
 
 - [X] scrollable output
 
 - [X] add check for regkeys existing
 - [X] add check for already installed
 - [X] catch regedit crash
-- [ ] install logs
+- [X] install logs
 
 ### Improvement Ideas:
 - [ ] more centralized regedits, with records maybe?

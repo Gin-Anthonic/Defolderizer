@@ -101,12 +101,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     private string installPathStatusFeedback;
 
     public string InstallPathStatusFeedback {
-        get { return installPathStatusFeedback; } 
-        set { 
+        get { return installPathStatusFeedback; }
+        set {
             installPathStatusFeedback = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPathStatusFeedback"));
         }
-    }
+    } 
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -147,7 +147,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private void SetDefaultUserSettings() {
         InstallPath = InstallerService.GetDefaultUserInstallPath();
-        InstallForAllUsers = false;
+        InstallForAllUsers = true;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
         CbInstalForAllUsers.IsEnabled = false;
@@ -157,8 +157,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     private void UpdateInstallPathStatusFeedback() {
         Dictionary<InstallCheckResult, string> statusMessages = new Dictionary<InstallCheckResult, string>() {
             {InstallCheckResult.OK,             "" },
-            {InstallCheckResult.PathFaulty,     "Install Path is Vaulty" },
-            {InstallCheckResult.NotWriteable,   "The Directory is not Writable" },
+            {InstallCheckResult.PathFaulty,     "Install Path is faulty" },
+            {InstallCheckResult.NotWriteable,   "The Directory is not writable" },
             {InstallCheckResult.FolderNotEmpty, "The Directory is not empty" }
         };
 
@@ -172,7 +172,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
         OpenFolderDialog dialog = new OpenFolderDialog();
-        dialog.InitialDirectory = "C:\\Program Files";
+        dialog.InitialDirectory = installPath;
         bool? dialogResult = dialog.ShowDialog();
         if (dialogResult == true) {
             InstallPath = dialog.FolderName + "\\Defolderizer";
