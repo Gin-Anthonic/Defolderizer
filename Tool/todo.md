@@ -15,7 +15,7 @@
 - [X] seperate code classes
 
 
-- [ ] installer
+- [X] installer
 
 ## Improvement Ideas:
 - [ ] Config

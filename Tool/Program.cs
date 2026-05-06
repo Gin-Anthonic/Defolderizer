@@ -12,19 +12,20 @@ internal class Program {
         Console.ReadKey();
         //return;
 
-        LoggingService logger = new LoggingService();
+        LoggingService loggingService = new LoggingService();
+        FeedbackService feedbackService = new FeedbackService();
 
-        if (ValidateArgs(args,logger) == false) return;
+        if (ValidateArgs(args,loggingService) == false) return;
 
         string currentDirectoryPath = args[0];
         string mode = args[1];
 
         DirectoryInfo currentDirectory = new DirectoryInfo(currentDirectoryPath);
 
-        DefolderizerService defolderizer = new DefolderizerService(currentDirectory,logger);
+        DefolderizerService defolderizer = new DefolderizerService(currentDirectory,loggingService,feedbackService);
 
-        Console.WriteLine(logger.WriteLogEntry("-----------------Program Started-----------------"));
-        Console.WriteLine(logger.WriteLogEntry("Current Directory: " + currentDirectoryPath + " Mode: " + mode, "Current Directory: [NAME REDACTED] Mode: " + mode));
+        Console.WriteLine(loggingService.WriteLogEntry("-----------------Program Started-----------------"));
+        Console.WriteLine(loggingService.WriteLogEntry("Current Directory: " + currentDirectoryPath + " Mode: " + mode, "Current Directory: [NAME REDACTED] Mode: " + mode));
 
         switch (mode) {
             case "unfold":
@@ -38,8 +39,8 @@ internal class Program {
                 break;
         }
 
-        logger.ShowUserFeedbackPopup();
-        logger.Close();
+        feedbackService.ShowUserFeedback();
+        loggingService.Close();
         Console.ReadKey();
     }
 

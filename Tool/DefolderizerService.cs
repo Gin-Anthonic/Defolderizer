@@ -6,11 +6,14 @@ public class DefolderizerService {
 
     private readonly LoggingService _logger;
     private readonly DirectoryInfo _selectedDirectory;
+    private readonly FeedbackService _feedbackService;
 
-    public DefolderizerService(DirectoryInfo givenDirectory, LoggingService logger) {
+    public DefolderizerService(DirectoryInfo givenDirectory, LoggingService logger,FeedbackService feedbackService) {
         _logger = logger;
         _selectedDirectory = givenDirectory;
+        _feedbackService = feedbackService;
     }
+
 
 
     public void Unfold() {
@@ -73,7 +76,7 @@ public class DefolderizerService {
 
         if (Directory.EnumerateFileSystemEntries(currentDirectory.FullName).Count() != 0) {
             Console.WriteLine(_logger.WriteLogEntry("Directory is not Empty... Removal Failed."));
-            _logger.AddToUserFeedback("\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n");
+            _feedbackService.AddMessage("\nThe Directory " + currentDirectory.Name + " was not removed as it still has contents!\n");
             return;
         }
 
@@ -83,12 +86,12 @@ public class DefolderizerService {
         catch (IOException e) {
             Console.WriteLine(_logger.WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
             Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-            _logger.AddToUserFeedback("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
+            _feedbackService.AddMessage("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
         }
         catch (UnauthorizedAccessException e) {
             Console.WriteLine(_logger.WriteLogEntry("Removing the Directory  " + currentDirectory.Name + " failed because:", "Removing the Directory  " + "[NAME REDACTED]" + " failed because:"));
             Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-            _logger.AddToUserFeedback("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
+            _feedbackService.AddMessage("\nAttempt to remove directory \"" + currentDirectory.Name + "\" failed due to the following Exception: \n" + e.Message + "\n");
         }
     }
 
@@ -115,17 +118,17 @@ public class DefolderizerService {
             catch (IOException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(file, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(file, e));
             }
             catch (SecurityException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(file, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(file, e));
             }
             catch (UnauthorizedAccessException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving File " + file.Name + " failed because:", "Moving File " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(file, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(file, e));
             }
         }
     }
@@ -153,17 +156,17 @@ public class DefolderizerService {
             catch (IOException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(directory, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(directory, e));
             }
             catch (SecurityException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(directory, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(directory, e));
             }
             catch (UnauthorizedAccessException e) {
                 Console.WriteLine(_logger.WriteLogEntry("Moving Directory " + directory.Name + " failed because:", "Moving Directory " + "[NAME REDACTED]" + " failed because:"));
                 Console.WriteLine(_logger.WriteLogEntry(e.Message, e.ToString()));
-                _logger.AddMoveFailure(new MoveFailure(directory, e));
+                _feedbackService.AddMoveFailure(new MoveFailure(directory, e));
             }
         }
     }
