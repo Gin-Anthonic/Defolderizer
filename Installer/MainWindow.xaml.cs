@@ -130,10 +130,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         else {
             SetDefaultUserSettings();
         }
-        InstallPossible = true;
         UpdateInstallPathStatusFeedback();
         _installerService.UpdateSettings();
-        Output = "Initialized!\n";
     }
 
 
@@ -183,20 +181,34 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         _installerService.Install();
     }
 
-    private void BtnRemoveRegistryEdits_Click(object sender, RoutedEventArgs e) {
-        _registryService.RemoveRegistryEdits(InstallForAllUsers);
-    }
-
     private void BtnRemoveForThisPC_Click(object sender, RoutedEventArgs e) {
-        _registryService.RemoveRegistryEdits(true);
+        try {
+            _registryService.RemoveRegistryEdits(true);
+            Print("Menu Cleared!");
+        }
+        catch (Exception ex) {
+            MessageBox.Show("Menu Clearing failed due to the following error:\n" + ex.Message);
+        }
     }
 
     private void BtnRemoveForUser_Click(object sender, RoutedEventArgs e) {
-        _registryService.RemoveRegistryEdits(false);
+        try {
+            _registryService.RemoveRegistryEdits(false);
+            Print("Menu Cleared!");
+        }
+        catch (Exception ex) {
+            MessageBox.Show("Menu Clearing failed due to the following error:\n" + ex.Message);
+        }
     }
 
     private void BtnUpdateMenu_Click(object sender, RoutedEventArgs e) {
-        _registryService.AddRegistryEdits(InstallForAllUsers, InstallPath, _menuPositions[selectedMenuPositionIndex]);
+        try {
+            _registryService.AddRegistryEdits(InstallForAllUsers, InstallPath, _menuPositions[selectedMenuPositionIndex]);
+            Print("Menu Updated!");
+        }
+        catch (Exception ex) {
+            MessageBox.Show("Menu Update failed due to the following error:\n" + ex.Message);
+        }
     }
 
 

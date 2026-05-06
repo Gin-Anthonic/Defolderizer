@@ -45,7 +45,6 @@ public class RegistryService : IRegistryService {
             if (key.OpenSubKey(path) == null)
                 continue;
             key.DeleteSubKeyTree(path);
-
         }
     }
 

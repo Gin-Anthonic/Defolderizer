@@ -88,6 +88,7 @@ public class InstallerService {
             }
             _mainWindow.Print("Registry Edits Successful!");
         }
+        _mainWindow.Print("Installation Complete!");
     }
 
     //kinda yucky but works for now
