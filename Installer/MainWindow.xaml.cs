@@ -22,9 +22,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         set {
             installPath = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InstallPath"));
-            installerService.UpdateSettings();
-            installPathStatus = installerService.CheckInstallValidity();
-            InstallPossible = (installPathStatus == InstallCheckResult.OK);
+            _installerService.UpdateSettings();
+            _installPathStatus = _installerService.CheckInstallValidity();
+            InstallPossible = (_installPathStatus == InstallCheckResult.OK);
             UpdateInstallPathStatusFeedback();
         }
     }
@@ -113,17 +113,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private readonly InstallerService installerService;
-    private readonly RegistryService registryService;
+    private readonly InstallerService _installerService;
+    private readonly RegistryService _registryService;
 
-    private readonly string[] menuPositions = ["Bottom","Top",""];
-    private InstallCheckResult installPathStatus;
+    private readonly string[] _menuPositions = ["Bottom","Top",""];
+    private InstallCheckResult _installPathStatus;
+
 
     public MainWindow() {
         DataContext = this;
         InitializeComponent();
-        registryService = new RegistryService();
-        installerService = new InstallerService(this, registryService);
+        _registryService = new RegistryService();
+        _installerService = new InstallerService(this, _registryService);
         HasAdminPrivileges = CheckAdminPrivileges();
      
         if (hasAdminPrivileges) {
@@ -134,7 +135,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
         InstallPossible = true;
         UpdateInstallPathStatusFeedback();
-        installerService.UpdateSettings();
+        _installerService.UpdateSettings();
         Output = "Initialized!\n";
     }
 
@@ -162,7 +163,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
             {InstallCheckResult.FolderNotEmpty, "The Directory is not empty" }
         };
 
-        InstallPathStatusFeedback = statusMessages[installPathStatus];
+        InstallPathStatusFeedback = statusMessages[_installPathStatus];
     }
 
     private void TbInstallPath_KeyDown(object sender, KeyEventArgs e) { 
@@ -181,24 +182,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     }
 
     private void BtnInstall_Click(object sender, RoutedEventArgs e) {
-        installerService.UpdateSettings();
-        installerService.Install();
+        _installerService.UpdateSettings();
+        _installerService.Install();
     }
 
     private void BtnRemoveRegistryEdits_Click(object sender, RoutedEventArgs e) {
-        registryService.RemoveRegistryEdits(InstallForAllUsers);
+        _registryService.RemoveRegistryEdits(InstallForAllUsers);
     }
 
     private void BtnRemoveForThisPC_Click(object sender, RoutedEventArgs e) {
-        registryService.RemoveRegistryEdits(true);
+        _registryService.RemoveRegistryEdits(true);
     }
 
     private void BtnRemoveForUser_Click(object sender, RoutedEventArgs e) {
-        registryService.RemoveRegistryEdits(false);
+        _registryService.RemoveRegistryEdits(false);
     }
 
     private void BtnUpdateMenu_Click(object sender, RoutedEventArgs e) {
-        registryService.AddRegistryEdits(InstallForAllUsers, InstallPath, menuPositions[selectedMenuPositionIndex]);
+        _registryService.AddRegistryEdits(InstallForAllUsers, InstallPath, _menuPositions[selectedMenuPositionIndex]);
     }
 
 

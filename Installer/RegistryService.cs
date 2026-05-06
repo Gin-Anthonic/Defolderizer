@@ -1,11 +1,10 @@
 ﻿using Microsoft.Win32;
-using System.Windows;
 
 namespace Defolderizer_Installer;
 
 public class RegistryService {
 
-    private readonly Dictionary<string,string> RegistryEdits = new Dictionary<string, string>() {
+    private readonly Dictionary<string,string> _registryEdits = new Dictionary<string, string>() {
 
         {"Software\\Classes\\Directory\\shell\\Defolderize",                        "defolderize" },
         {"Software\\Classes\\Directory\\shell\\Unfold",                             "unfold" },
@@ -25,7 +24,7 @@ public class RegistryService {
         else if (forAllUsers == false) {
             keyRoot = "HKEY_CURRENT_USER\\";
         }
-        foreach (KeyValuePair<string, string> registryEdit in RegistryEdits) {
+        foreach (KeyValuePair<string, string> registryEdit in _registryEdits) {
             Registry.SetValue(keyRoot + registryEdit.Key + "\\command", "", $"""{installPath}\defolderizer.exe "%V" "{registryEdit.Value}" """);
             Registry.SetValue(keyRoot + registryEdit.Key, "position", position);
         }
@@ -41,7 +40,7 @@ public class RegistryService {
             key = Registry.CurrentUser;
         }
 
-        foreach (string path in RegistryEdits.Keys) {
+        foreach (string path in _registryEdits.Keys) {
             if (key.OpenSubKey(path) == null)
                 continue;
             key.DeleteSubKeyTree(path);
@@ -54,7 +53,7 @@ public class RegistryService {
         bool result = true;
         RegistryKey? key;
 
-        foreach (string path in RegistryEdits.Keys) {
+        foreach (string path in _registryEdits.Keys) {
             key = Registry.LocalMachine.OpenSubKey(path);
             if (key == null) result = false;
         }
@@ -67,7 +66,7 @@ public class RegistryService {
         bool result = true;
         RegistryKey? key;
 
-        foreach (string path in RegistryEdits.Keys) {
+        foreach (string path in _registryEdits.Keys) {
             key = Registry.CurrentUser.OpenSubKey(path);
             if (key == null) result = false;
         }

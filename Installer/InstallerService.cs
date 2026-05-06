@@ -14,96 +14,96 @@ public enum InstallCheckResult {
 
 public class InstallerService {
 
-    private string installPath = "";
-    private bool? addToRightClick;
-    private bool? forAllUsers;
-    private string menuPosition = "";
-    private MainWindow mainWindow;
-    private RegistryService registryService;
-    private LoggingService loggingService = new LoggingService();
+    private string _installPath = "";
+    private bool? _addToRightClick;
+    private bool? _forAllUsers;
+    private string _menuPosition = "";
+    private readonly MainWindow _mainWindow;
+    private readonly RegistryService _registryService;
+    private readonly LoggingService _loggingService = new LoggingService();
+    
     private readonly string[] menuPositions = ["Bottom", "Top", ""];
-
     private readonly string[] installFiles = [
         "defolderizer.exe",
         "config.ini"
         ];
 
+
     public InstallerService(MainWindow mainWindow, RegistryService registryService) {
-        this.mainWindow = mainWindow;
-        this.registryService = registryService;
+        this._mainWindow = mainWindow;
+        this._registryService = registryService;
     }
 
 
     public void UpdateSettings() {
-        installPath = mainWindow.InstallPath;
-        addToRightClick = mainWindow.AddToRightClick;
-        forAllUsers = mainWindow.InstallForAllUsers;
-        menuPosition = menuPositions[mainWindow.SelectedMenuPositionIndex];
-       // mainWindow.Print(installPath + "\n" + addToRightClick.ToString() + forAllUsers.ToString() + menuPosition);
+        _installPath = _mainWindow.InstallPath;
+        _addToRightClick = _mainWindow.AddToRightClick;
+        _forAllUsers = _mainWindow.InstallForAllUsers;
+        _menuPosition = menuPositions[_mainWindow.SelectedMenuPositionIndex];
     }
 
 
     public void Install() {
 
-        mainWindow.ClearOutput();
-        mainWindow.Print("Installation started...");
-        mainWindow.Print("Creating Folder..");
+        _mainWindow.ClearOutput();
+        _mainWindow.Print("Installation started...");
+        _mainWindow.Print("Creating Folder..");
 
         DirectoryInfo installDirectory;
         try {
-            installDirectory = Directory.CreateDirectory(installPath);
+            installDirectory = Directory.CreateDirectory(_installPath);
         }
         catch (Exception e) {
-            MessageBox.Show("Failed to Create Directory at \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            mainWindow.Print("Failed to Create Directory at " + installPath + " due to the following error: \n" + e.Message);
-            loggingService.CreateInstallFailureLog(mainWindow.Output,e,mainWindow.HasAdminPrivileges,forAllUsers);
+            MessageBox.Show("Failed to Create Directory at \n" + _installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            _mainWindow.Print("Failed to Create Directory at " + _installPath + " due to the following error: \n" + e.Message);
+            _loggingService.CreateInstallFailureLog(_mainWindow.Output,e,_mainWindow.HasAdminPrivileges,_forAllUsers);
             return;
         }
 
-        mainWindow.Print("Directory creation successful!");
-        mainWindow.Print("Copying files...");
+        _mainWindow.Print("Directory creation successful!");
+        _mainWindow.Print("Copying files...");
 
         try {
             CopyFiles();
         }
         catch (Exception e) {
-            MessageBox.Show("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            mainWindow.Print("Failed to copy files to \n" + installPath + " due to the following error: \n" + e.Message);
-            loggingService.CreateInstallFailureLog(mainWindow.Output, e, mainWindow.HasAdminPrivileges, forAllUsers);
+            MessageBox.Show("Failed to copy files to \n" + _installPath + " due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            _mainWindow.Print("Failed to copy files to \n" + _installPath + " due to the following error: \n" + e.Message);
+            _loggingService.CreateInstallFailureLog(_mainWindow.Output, e, _mainWindow.HasAdminPrivileges, _forAllUsers);
             return;
         }
 
-        mainWindow.Print("Copying files successful");
-        mainWindow.Print("Adding registry entries...");
+        _mainWindow.Print("Copying files successful");
+        _mainWindow.Print("Adding registry entries...");
 
-        if (addToRightClick == true) {
+        if (_addToRightClick == true) {
             try {
-                registryService.AddRegistryEdits(forAllUsers, installPath,menuPosition);
+                _registryService.AddRegistryEdits(_forAllUsers, _installPath,_menuPosition);
             }
             catch (Exception e) {
                 MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
-                loggingService.CreateInstallFailureLog(mainWindow.Output, e, mainWindow.HasAdminPrivileges, forAllUsers);
+                _mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
+                _loggingService.CreateInstallFailureLog(_mainWindow.Output, e, _mainWindow.HasAdminPrivileges, _forAllUsers);
                 return;
             }
-            mainWindow.Print("Registry Edits Successful!");
+            _mainWindow.Print("Registry Edits Successful!");
         }
     }
 
     //kinda yucky but works for now
     public InstallCheckResult CheckInstallValidity() {
         Regex badChars = new Regex(".*([<>\"|?*]|:[^\\\\]).*"); //good enough for now bruv
-        if (Path.IsPathFullyQualified(installPath) && !badChars.IsMatch(installPath) == false) {
+        if (Path.IsPathFullyQualified(_installPath) && !badChars.IsMatch(_installPath) == false) {
             return InstallCheckResult.PathFaulty;
         }
 
-        string pathToTry = installPath;
+        string pathToTry = _installPath;
 
-        if (Directory.Exists(installPath)) {
-            if (Directory.EnumerateFileSystemEntries(installPath).Count() != 0) {
+        if (Directory.Exists(_installPath)) {
+            if (Directory.EnumerateFileSystemEntries(_installPath).Count() != 0) {
                 return InstallCheckResult.FolderNotEmpty;
             }
-            pathToTry = Path.Combine(installPath, "test");
+            pathToTry = Path.Combine(_installPath, "test");
         }
         try {
             Directory.CreateDirectory(pathToTry);
@@ -118,7 +118,7 @@ public class InstallerService {
     
     public bool InstallExists() {
         foreach (string fileName in installFiles) {
-            if (File.Exists(Path.Combine(installPath, fileName)) == false) {
+            if (File.Exists(Path.Combine(_installPath, fileName)) == false) {
                 return false;
             }
         }
@@ -129,7 +129,7 @@ public class InstallerService {
     private void CopyFiles() {
         foreach (string fileName in installFiles) {
             FileInfo currentFile = new FileInfo(fileName);
-            currentFile.CopyTo(Path.Combine(installPath,currentFile.Name));
+            currentFile.CopyTo(Path.Combine(_installPath,currentFile.Name));
         }
     }
 

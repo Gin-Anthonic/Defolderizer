@@ -4,21 +4,21 @@ namespace Defolderizer;
 
 public class LoggingService {
 
-    private string UserFeedback = "";
-    private List<MoveFailure> MoveFailures = [];
+    private string _userFeedback = "";
+    private List<MoveFailure> _moveFailures = [];
 
-    private readonly FileInfo userLogFile = new FileInfo("userLog.txt");
-    private readonly FileInfo developerLogFile = new FileInfo("developerLog.txt");
+    private readonly FileInfo _userLogFile = new FileInfo("userLog.txt");
+    private readonly FileInfo _developerLogFile = new FileInfo("developerLog.txt");
 
-    private readonly StreamWriter userWriter;
-    private readonly StreamWriter developerWriter;
+    private readonly StreamWriter _userWriter;
+    private readonly StreamWriter _developerWriter;
 
-    private readonly Regex filePathFinderRegex = new Regex("'.*[\\\\/].*'");
+    private readonly Regex _filePathFinderRegex = new Regex("'.*[\\\\/].*'");
 
 
     public LoggingService() {
-        userWriter = userLogFile.AppendText();
-        developerWriter = developerLogFile.AppendText();
+        _userWriter = _userLogFile.AppendText();
+        _developerWriter = _developerLogFile.AppendText();
     }
 
 
@@ -27,41 +27,41 @@ public class LoggingService {
         if (developerLogText == "") {
             developerLogText = userLogText;
         }
-        userWriter.WriteLine(DateTime.Now + " - " + userLogText);
-        developerWriter.WriteLine(DateTime.Now + " - " + filePathFinderRegex.Replace(developerLogText, "[FILEPATH REDACTED]"));
+        _userWriter.WriteLine(DateTime.Now + " - " + userLogText);
+        _developerWriter.WriteLine(DateTime.Now + " - " + _filePathFinderRegex.Replace(developerLogText, "[FILEPATH REDACTED]"));
         return userLogText;
     }
 
 
     public void AddToUserFeedback(string messageContent) {
-        UserFeedback += messageContent;
+        _userFeedback += messageContent;
     }
 
 
     public void AddMoveFailure(MoveFailure moveFailure) {
-        MoveFailures.Add(moveFailure);
+        _moveFailures.Add(moveFailure);
     }
 
 
     public void ShowUserFeedbackPopup() {
-        if (MoveFailures.Count > 0) {
+        if (_moveFailures.Count > 0) {
             string message = "The following Files/Directories could not be moved: \n\n----------------------";
 
-            foreach (MoveFailure failure in MoveFailures) {
+            foreach (MoveFailure failure in _moveFailures) {
                 message += "\n\n" + failure.Entry.FullName + "\nWhat went wrong: \n" + failure.CaughtException.Message;
             }
-            UserFeedback = message + "\n\n----------------------\n" + UserFeedback;
+            _userFeedback = message + "\n\n----------------------\n" + _userFeedback;
         }
 
-        if (UserFeedback != "") {
-            MessageBox.Show(UserFeedback);
+        if (_userFeedback != "") {
+            MessageBox.Show(_userFeedback);
         }
     }
 
 
     public void Close() {
-        userWriter.Close();
-        developerWriter.Close();
+        _userWriter.Close();
+        _developerWriter.Close();
     }
 
 }
