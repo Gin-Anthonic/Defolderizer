@@ -10,15 +10,16 @@
 - [X] rework layout
 - [X] add installpath validity feedback
 - [X] disable installbutton when install impossible
-
+- [X] enter to update install path text
 - [X] scrollable output
 
 - [X] add check for regkeys existing
 - [X] add check for already installed
-- [X] catch regedit crash
+- [ ] catch regedit crash
 - [X] install logs
 
 ### Improvement Ideas:
 - [ ] more centralized regedits, with records maybe?
 - [ ] grouping menu entries
-- [ ] enter to update install path text
+- [ ] install status info
+- [ ] uninstall/repair

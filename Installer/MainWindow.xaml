@@ -27,7 +27,7 @@
             <TextBox Name="TbInstallPath"   Grid.Column="1"
              VerticalAlignment="Center" HorizontalAlignment="Center"
              Width="340"
-             LostFocus="TbInstallPath_LostFocus" 
+             KeyDown="TbInstallPath_KeyDown"
              Text="{Binding InstallPath}"
          />
             <Button Name="BtnBrowse" Content="Browse" 

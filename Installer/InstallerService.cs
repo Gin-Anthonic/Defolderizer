@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Printing;
 using System.Text.RegularExpressions;
 using System.Windows;
 
@@ -124,19 +123,6 @@ public class InstallerService {
             }
         }
         return true;
-    }
-
-
-    public void AddRegEdits() {
-        try {
-            registryService.AddRegistryEdits(forAllUsers, installPath, menuPosition);
-        }
-        catch (Exception e) {
-            MessageBox.Show("Registry edits failed due to the following error: \n" + e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-            mainWindow.Print("Registry edits failed due to the following error: \n" + e.Message);
-            return;
-        }
-        mainWindow.Print("Registry Edits Successful!");
     }
 
 

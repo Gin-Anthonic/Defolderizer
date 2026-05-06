@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
 
 
 namespace Defolderizer_Installer;
@@ -98,7 +100,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         }
     }
 
-    private string installPathStatusFeedback;
+    private string installPathStatusFeedback = "";
 
     public string InstallPathStatusFeedback {
         get { return installPathStatusFeedback; }
@@ -147,11 +149,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private void SetDefaultUserSettings() {
         InstallPath = InstallerService.GetDefaultUserInstallPath();
-        InstallForAllUsers = true;
+        InstallForAllUsers = false;
         AddToRightClick = true;
         SelectedMenuPositionIndex = 1;
-        CbInstalForAllUsers.IsEnabled = false;
-        BtnRemoveForThisPC.IsEnabled = false;
     }
 
     private void UpdateInstallPathStatusFeedback() {
@@ -165,9 +165,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
         InstallPathStatusFeedback = statusMessages[installPathStatus];
     }
 
-    private void TbInstallPath_LostFocus(object sender, RoutedEventArgs e) {
-        BindingExpression binding = TbInstallPath.GetBindingExpression(TextBox.TextProperty); //force the DataBinding to Update
-        binding?.UpdateSource();
+    private void TbInstallPath_KeyDown(object sender, KeyEventArgs e) { 
+        if (e.Key == Key.Enter){
+            Keyboard.Focus(TblOutput);
+        }
     }
 
     private void BtnBrowse_Click(object sender, RoutedEventArgs e) {
@@ -186,11 +187,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
 
     private void BtnRemoveRegistryEdits_Click(object sender, RoutedEventArgs e) {
         registryService.RemoveRegistryEdits(InstallForAllUsers);
-    }
-
-    private void BtnAddRegistryEdits_Click(object sender, RoutedEventArgs e) {
-        installerService.UpdateSettings();
-        installerService.AddRegEdits();
     }
 
     private void BtnRemoveForThisPC_Click(object sender, RoutedEventArgs e) {
