@@ -1,9 +1,9 @@
-﻿using System.IO;
+﻿using Defolderizer_Installer.Interfaces;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-
-namespace Defolderizer_Installer;
+namespace Defolderizer_Installer.Services;
 
 public enum InstallCheckResult { 
     OK,
@@ -19,8 +19,8 @@ public class InstallerService {
     private bool? _forAllUsers;
     private string _menuPosition = "";
     private readonly MainWindow _mainWindow;
-    private readonly RegistryService _registryService;
-    private readonly LoggingService _loggingService = new LoggingService();
+    private readonly IRegistryService _registryService;
+    private readonly ILoggingService _loggingService = new FileLoggingService();
     
     private readonly string[] menuPositions = ["Bottom", "Top", ""];
     private readonly string[] installFiles = [
@@ -29,9 +29,9 @@ public class InstallerService {
         ];
 
 
-    public InstallerService(MainWindow mainWindow, RegistryService registryService) {
-        this._mainWindow = mainWindow;
-        this._registryService = registryService;
+    public InstallerService(MainWindow mainWindow, IRegistryService registryService) {
+        _mainWindow = mainWindow;
+        _registryService = registryService;
     }
 
 

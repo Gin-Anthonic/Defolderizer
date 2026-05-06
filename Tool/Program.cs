@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Defolderizer.Interfaces;
+using Defolderizer.Services;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Defolderizer;
 
@@ -12,8 +14,8 @@ internal class Program {
         Console.ReadKey();
         //return;
 
-        LoggingService loggingService = new LoggingService();
-        FeedbackService feedbackService = new FeedbackService();
+        ILoggingService loggingService = new FileLoggingService();
+        IFeedbackService feedbackService = new FeedbackService();
 
         if (ValidateArgs(args,loggingService) == false) return;
 
@@ -45,7 +47,7 @@ internal class Program {
     }
 
 
-    private static bool ValidateArgs(string[] args, LoggingService logger) {
+    private static bool ValidateArgs(string[] args, ILoggingService logger) {
         if (args.Length != 2) {
             Console.WriteLine(logger.WriteLogEntry("Invalid number of Arguments given(path,mode).. exiting..."));
             return false;
@@ -72,3 +74,4 @@ internal class Program {
     }
 
 }
+

@@ -1,8 +1,9 @@
-﻿using Microsoft.Win32;
+﻿using Defolderizer_Installer.Interfaces;
+using Microsoft.Win32;
 
-namespace Defolderizer_Installer;
+namespace Defolderizer_Installer.Services;
 
-public class RegistryService {
+public class RegistryService : IRegistryService {
 
     private readonly Dictionary<string,string> _registryEdits = new Dictionary<string, string>() {
 

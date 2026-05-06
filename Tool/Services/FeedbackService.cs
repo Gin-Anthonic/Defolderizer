@@ -1,6 +1,10 @@
-﻿namespace Defolderizer;
+﻿using Defolderizer.Interfaces;
+using Defolderizer.Models;
 
-public class FeedbackService {
+namespace Defolderizer.Services;
+
+
+public class FeedbackService : IFeedbackService {
 
     private string _userFeedback = "";
     private List<MoveFailure> _moveFailures = [];
@@ -33,4 +37,3 @@ public class FeedbackService {
 }
 
 
-public record MoveFailure(FileSystemInfo Entry, Exception CaughtException);

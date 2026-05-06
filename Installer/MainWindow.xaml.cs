@@ -1,14 +1,11 @@
 ﻿
 using Microsoft.Win32;
 using System.ComponentModel;
-using System.IO;
 using System.Security.Principal;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Interop;
+using Defolderizer_Installer.Services;
+using Defolderizer_Installer.Interfaces;
 
 
 namespace Defolderizer_Installer;
@@ -114,7 +111,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly InstallerService _installerService;
-    private readonly RegistryService _registryService;
+    private readonly IRegistryService _registryService;
 
     private readonly string[] _menuPositions = ["Bottom","Top",""];
     private InstallCheckResult _installPathStatus;

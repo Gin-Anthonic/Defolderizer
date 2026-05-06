@@ -1,14 +1,16 @@
-﻿using System.Security;
+﻿using Defolderizer.Interfaces;
+using Defolderizer.Models;
+using System.Security;
 
-namespace Defolderizer;
+namespace Defolderizer.Services;
 
 public class DefolderizerService {
 
-    private readonly LoggingService _logger;
+    private readonly ILoggingService _logger;
+    private readonly IFeedbackService _feedbackService;
     private readonly DirectoryInfo _selectedDirectory;
-    private readonly FeedbackService _feedbackService;
 
-    public DefolderizerService(DirectoryInfo givenDirectory, LoggingService logger,FeedbackService feedbackService) {
+    public DefolderizerService(DirectoryInfo givenDirectory, ILoggingService logger, IFeedbackService feedbackService) {
         _logger = logger;
         _selectedDirectory = givenDirectory;
         _feedbackService = feedbackService;

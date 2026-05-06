@@ -1,8 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using Defolderizer.Interfaces;
+using System.Text.RegularExpressions;
 
-namespace Defolderizer;
+namespace Defolderizer.Services;
 
-public class LoggingService {
+public class FileLoggingService : ILoggingService {
 
 
     private readonly FileInfo _userLogFile = new FileInfo("userLog.txt");
@@ -14,7 +15,7 @@ public class LoggingService {
     private readonly Regex _filePathFinderRegex = new Regex("'.*[\\\\/].*'");
 
 
-    public LoggingService() {
+    public FileLoggingService() {
         _userWriter = _userLogFile.AppendText();
         _developerWriter = _developerLogFile.AppendText();
     }

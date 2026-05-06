@@ -1,10 +1,9 @@
-﻿
-
+﻿using Defolderizer_Installer.Interfaces;
 using System.IO;
 
-namespace Defolderizer_Installer;
+namespace Defolderizer_Installer.Services;
 
-public class LoggingService {
+public class FileLoggingService : ILoggingService {
     
     public void CreateInstallFailureLog(string outputContent, Exception exception, bool hadAdminPrivliges, bool? installForAllUsers) {
         string logContent = $"Admin Status: {hadAdminPrivliges.ToString()}\n" +
