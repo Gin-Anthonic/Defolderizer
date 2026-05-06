@@ -8,11 +8,11 @@ internal class Program {
 
     static void Main(string[] args) {
 
-        //SetupTestFolder();
-        Console.ReadKey();
-        Console.WriteLine("Has been run with the following arguments: " + args[0] + ", " + args[1]);
-        Console.ReadKey();
-        //return;
+        if (args.Length == 0) {
+            Console.WriteLine("No Arguments given.. This tool is supposed to be run from the Context Menu...");
+            Console.ReadKey();
+            return;
+        }
 
         ILoggingService loggingService = new FileLoggingService();
         IFeedbackService feedbackService = new FeedbackService();
@@ -43,7 +43,6 @@ internal class Program {
 
         feedbackService.ShowUserFeedback();
         loggingService.Close();
-        Console.ReadKey();
     }
 
 
@@ -64,13 +63,6 @@ internal class Program {
             return false;
         }
         return true;
-    }
-
-
-    private static void SetupTestFolder() {
-        Directory.Delete("C:\\Users\\Work\\Desktop\\testing", true);
-        Directory.CreateDirectory("C:\\Users\\Work\\Desktop\\testing");
-        FileSystem.CopyDirectory("C:\\Users\\Work\\Documents\\gin", "C:\\Users\\Work\\Desktop\\testing\\gin");
     }
 
 }
