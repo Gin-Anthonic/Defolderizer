@@ -6,8 +6,8 @@ namespace Defolderizer.Services;
 public class FileLoggingService : ILoggingService {
 
 
-    private readonly FileInfo _userLogFile = new FileInfo("userLog.txt");
-    private readonly FileInfo _developerLogFile = new FileInfo("developerLog.txt");
+    private readonly FileInfo _userLogFile = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userLog.txt"));
+    private readonly FileInfo _developerLogFile = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "developerLog.txt"));
 
     private readonly StreamWriter _userWriter;
     private readonly StreamWriter _developerWriter;
