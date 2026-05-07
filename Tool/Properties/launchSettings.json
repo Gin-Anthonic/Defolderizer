@@ -2,7 +2,7 @@
   "profiles": {
     "Defolderizer": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\Work\\Desktop\\testing\\gin\" \"recursive\""
+      "commandLineArgs": "\"C:\\Users\\Gin\\Desktop\\test\\asdf\" \"unfold\""
     }
   }
 }

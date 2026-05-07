@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Defolderizer.Services;
 
-public class FileLoggingService : ILoggingService {
+public class FileLoggingService : ILoggingService, IDisposable {
 
 
     private readonly FileInfo _userLogFile = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userLog.txt"));
@@ -32,10 +32,11 @@ public class FileLoggingService : ILoggingService {
     }
 
 
-    public void Close() {
+    public void Dispose() {
         _userWriter.Close();
+        _userWriter.Dispose();
         _developerWriter.Close();
+        _developerWriter.Dispose();
     }
-
 }
 
