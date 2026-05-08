@@ -12,7 +12,7 @@ public class DefolderizerService {
     public DefolderizerService(ILoggingService logger, IFeedbackService feedbackService) {
         _loggingService = logger;
         _feedbackService = feedbackService;
-    }
+    } 
 
 
     public void Execute(string path, string mode) {
