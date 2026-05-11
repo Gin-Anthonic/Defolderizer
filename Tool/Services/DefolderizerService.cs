@@ -176,7 +176,7 @@ public class DefolderizerService {
     }
 
 
-    private string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
+    public string FindViableFileName(FileInfo file, DirectoryInfo parentDirectory) {
         Console.WriteLine(_loggingService.WriteLogEntry("Finding new name..."));
 
         string extenstionlessFileName = file.Name[..file.Name.LastIndexOf(".")];
@@ -198,7 +198,7 @@ public class DefolderizerService {
     }
 
 
-    private string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
+    public string FindViableDirectoryName(DirectoryInfo directory, DirectoryInfo parentDirectory) {
         Console.WriteLine(_loggingService.WriteLogEntry("Finding new name..."));
 
         string newDirectoryPath = Path.Combine(parentDirectory.FullName, directory.Name);
