@@ -5,19 +5,27 @@ namespace Defolderizer.Services;
 
 public class FileLoggingService : ILoggingService, IDisposable {
 
-
-    private readonly FileInfo _userLogFile = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "userLog.txt"));
-    private readonly FileInfo _developerLogFile = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "developerLog.txt"));
-
-    private readonly StreamWriter _userWriter;
-    private readonly StreamWriter _developerWriter;
+    private readonly string _logFilePath;
+    private readonly FileInfo _userLogFile;
+    private readonly FileInfo _developerLogFile;
+    private readonly StreamWriter _userWriter = StreamWriter.Null;
+    private readonly StreamWriter _developerWriter = StreamWriter.Null;
 
     private readonly Regex _filePathFinderRegex = new Regex("'.*[\\\\/].*'");
 
 
     public FileLoggingService() {
-        _userWriter = _userLogFile.AppendText();
-        _developerWriter = _developerLogFile.AppendText();
+        _logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "programs", "Defolderizer");
+        _userLogFile = new FileInfo(Path.Combine(_logFilePath, "userLog.txt"));
+        _developerLogFile = new FileInfo(Path.Combine(_logFilePath, "developerLog.txt"));
+        try {
+            _userWriter = _userLogFile.AppendText();
+            _developerWriter = _developerLogFile.AppendText();
+
+        }
+        catch (Exception e) {
+            MessageBox.Show("Logfiles unaccessable. No logs will be created.\nError:\n" + e.Message);
+        }
     }
 
 
@@ -26,8 +34,12 @@ public class FileLoggingService : ILoggingService, IDisposable {
         if (developerLogText == "") {
             developerLogText = userLogText;
         }
-        _userWriter.WriteLine(DateTime.Now + " - " + userLogText);
-        _developerWriter.WriteLine(DateTime.Now + " - " + _filePathFinderRegex.Replace(developerLogText, "[FILEPATH REDACTED]"));
+
+        try {
+            _userWriter.WriteLine(DateTime.Now + " - " + userLogText);
+            _developerWriter.WriteLine(DateTime.Now + " - " + _filePathFinderRegex.Replace(developerLogText, "[FILEPATH REDACTED]"));
+        }
+        catch { }
         return userLogText;
     }
 
