@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="Defolderizer.Tests/Defolderizer.Tests.csproj" Id="8d2757cd-a981-49ab-b6b8-eb7acdefdbc3" />
   <Project Path="Installer/Defolderizer Installer.csproj" />
   <Project Path="Tool/Defolderizer.csproj" />
 </Solution>
