@@ -21,7 +21,20 @@ public class FileLoggingService : ILoggingService, IDisposable {
         try {
             _userWriter = _userLogFile.AppendText();
             _developerWriter = _developerLogFile.AppendText();
+        }
+        catch (Exception e) {
+            MessageBox.Show("Logfiles unaccessable. No logs will be created.\nError:\n" + e.Message);
+        }
+    }
 
+
+    public FileLoggingService(string logFilePath) {
+        _logFilePath = logFilePath;
+        _userLogFile = new FileInfo(Path.Combine(_logFilePath, "userLog.txt"));
+        _developerLogFile = new FileInfo(Path.Combine(_logFilePath, "developerLog.txt"));
+        try {
+            _userWriter = _userLogFile.AppendText();
+            _developerWriter = _developerLogFile.AppendText();
         }
         catch (Exception e) {
             MessageBox.Show("Logfiles unaccessable. No logs will be created.\nError:\n" + e.Message);
@@ -34,7 +47,6 @@ public class FileLoggingService : ILoggingService, IDisposable {
         if (developerLogText == "") {
             developerLogText = userLogText;
         }
-
         try {
             _userWriter.WriteLine(DateTime.Now + " - " + userLogText);
             _developerWriter.WriteLine(DateTime.Now + " - " + _filePathFinderRegex.Replace(developerLogText, "[FILEPATH REDACTED]"));
