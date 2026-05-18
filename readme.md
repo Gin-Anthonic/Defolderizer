@@ -48,19 +48,19 @@ And ways to manually add/remove the items to the context menu.
 
 ## Technical Implementation
 
-#### Robust Exception Handling and Logging:
+__**Robust Exception Handling and Logging:**__
 Permission errors and locked/missing files are cleanly handled, **logged** for **user feedback** and **log files** and the program exits cleanly **without crashing**.
 
-#### Service-Centric Approach: 
+__**Service-Centric Approach:**__ 
 Code is logically separated into **Services** and **Models**.
 
-#### Dependency Injection & Inversion:
+__**Dependency Injection & Inversion:**__
 **Interfaces** and **DI** are implemented to enable De-Coupling and **Dependency Inversion**.
 
-#### Seperation of UI and Logic(Installer):
+__**Seperation of UI and Logic(Installer):**__
 **UI(WPF)** and **Business Logic** are cleanly seperated and make use of **Data Bindings**.
 
-#### Tests:
+__**Tests:**__
 Some critical functionality is **Unit- and Integration-Tested** to enable stable refactoring.
 
 ## Known Issues
