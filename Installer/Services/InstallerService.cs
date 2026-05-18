@@ -129,7 +129,7 @@ public class InstallerService {
 
     private void CopyFiles() {
         foreach (string fileName in installFiles) {
-            FileInfo currentFile = new FileInfo(fileName);
+            FileInfo currentFile = new FileInfo(Path.Combine("install_files",fileName));
             currentFile.CopyTo(Path.Combine(_installPath,currentFile.Name));
         }
     }
