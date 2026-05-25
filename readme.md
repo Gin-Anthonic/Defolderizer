@@ -3,9 +3,7 @@
 An automated desktop utility to quickly **move files out of folders** and instantly flatten **deeply nested folder structures** with **just two clicks**.
 
 <p float="left">
-  <img src="assets/showcase_unfold.gif" width="300" />
-  <img src="assets/showcase_defolderize.gif" width="300" /> 
-  <img src="assets/showcase_recursive.gif" width="300" />
+  <img src="assets/showcase.gif" />
 </p>
 
 
